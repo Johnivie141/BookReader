@@ -1,0 +1,22 @@
+.Read {
+  font-size: 2rem;
+  text-align: left;
+  background-color: white;
+  padding-bottom: 60px; }
+
+.BookText {
+  background-color: white;
+  padding: 60px; }
+
+.Book {
+  background-color: gray;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 32px;
+  padding-right: 32px; }
+
+.word {
+  color: blue; }

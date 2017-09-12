@@ -1,0 +1,9 @@
+.Main {
+  font-size: 2rem;
+  color: white; }
+
+.show {
+  display: inline-block; }
+
+.hide {
+  display: none; }
