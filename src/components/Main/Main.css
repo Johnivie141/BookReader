@@ -1,6 +1,13 @@
 .Main {
   font-size: 2rem;
-  color: white; }
+  background-image: url("../../images/library.jpg");
+  width: calc(100vw -80px);
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: white;
+  padding: 0px;
+  margin: 0px; }
 
 .show {
   display: inline-block; }

@@ -1,6 +1,6 @@
 import React from 'react';
 import Parser from 'html-react-parser';
-import {apiChangeSpelling,apiGetAuthorBio,apiGetBookDescription,apiMerriamDictionary,apiGetCurrent,apiSetCurrent,apiGetNextPage,apiGetPrevPage,apiGetPage,apiSetLike,apiGetSuggestionText,apiGetBooks,apiGetBookById,apiGetBooksByAuthor,apiGetSuggestions,apiGetUser,apiLogin} from '../services/apiServices';
+import {apiDownload,apiChangeSpelling,apiGetAuthorBio,apiGetBookDescription,apiMerriamDictionary,apiGetCurrent,apiSetCurrent,apiGetNextPage,apiGetPrevPage,apiGetPage,apiSetLike,apiGetSuggestionText,apiGetBooks,apiGetBookById,apiGetBooksByAuthor,apiGetSuggestions,apiGetUser,apiLogin} from '../services/apiServices';
 
 
 const FULFILLED="_FULFILLED";
@@ -34,10 +34,47 @@ const SET_MODAL = "SET_MODAL";
 const GET_AUTHOR_BIO="GET_AUTHOR_BIO";
 const GET_BOOK_DESCRIPTION="GET_BOOK_DESCRIPTION";
 const CHANGE_SPELLING="CHANGE_SPELLING";
-export function changeWord(bookid,oldWord,newWord,position){
+
+const NEXT_SHELF="NEXT_SHELF";
+const PREV_SHELF="PREV_SHELF";
+
+const SET_FILTER="SET_FILTER";
+const DOWNLOAD="DOWNLOAD";
+
+export function downloadBook(bookid)
+{
+	return {
+		type:DOWNLOAD,
+		payload:apiDownload(bookid)
+	}
+}
+export function setFilter(filter){
+	console.log("CREATE SET_FILTER ACTION value " + filter);
+	return {
+		type:SET_FILTER,
+		payload:filter
+	}
+}
+export function nextShelf(shelf,filter){
+	return {
+		type:NEXT_SHELF,
+		payload:apiGetBooks(shelf,filter)
+	}
+}
+export function prevShelf(shelf,filter){
+	return {
+		type:PREV_SHELF,
+		payload:apiGetBooks(shelf,filter)
+	      }
+}
+
+
+export function changeWord(bookid,oldWord,newWord,position,spellings){
+	console.log("debug reducer spellings");
+	console.log(spellings);
 	return {
 		type: CHANGE_SPELLING,
-		payload:apiChangeSpelling(bookid,oldWord,newWord,position)
+		payload:apiChangeSpelling(bookid,oldWord,newWord,position,spellings)
 	}
 }
 
@@ -139,10 +176,12 @@ export function Login(){
 		payload:apiLogin()
 	}
 }
-export function getBooks(bookShelf){
+export function getBooks(bookShelf,filter){
+console.log("calling api function filter is " + filter);
+	
 	return {
 		type:GET_BOOKS,
-		payload:apiGetBooks(bookShelf)
+		payload:apiGetBooks(bookShelf,filter)
 	}
 }
 
@@ -185,16 +224,42 @@ let initialState={
         openModal:false,
 	AuthorBio:'',
 	BookDescription:'',
-        modalObject:null
+        modalObject:null,
+	spellings:[],
+	filter:"all",
+	localBooks:[]
 }
 
 
 
+
 export default function reducer(state=initialState,action){
+	console.log(action.type);
 	switch(action.type)
 	{
+	
+	case DOWNLOAD + FULFILLED:
+
+			let newLocalBooks = state.localBooks.slice(0);
+			newLocalBooks.push(action.payload);
+	     return Object.assign({},state,{LocalBooks:newLocalBooks});
+
+		
+	case SET_FILTER:
+			console.log("FILTER SET TO " + action.payload);
+	     return Object.assign({},state,{filter:action.payload});
+
+	case NEXT_SHELF + FULFILLED:
+			let nextShelf = state.bookShelf +1;
+console.log("next shelf" + nextShelf);
+			return Object.assign({},state,{bookShelf:nextShelf,books:action.payload});
+	case PREV_SHELF +FULFILLED:
+			return Object.assign({},state,{bookShelf:state.bookShelf -1,books:action.payload});
+	case CHANGE_SPELLING:
+                    return Object.assign({},state,{modalObject:null,openModal:false});
 	case CHANGE_SPELLING + FULFILLED:
-			return Object.assign({},state,{spellings:action.payload});
+	
+			return Object.assign({},state,{spellings:action.payload,modalObject:null,openModal:false});
 
 	case GET_AUTHOR_BIO + FULFILLED:
 			return Object.assign({},state,{AuthorBio:action.payload});
@@ -213,10 +278,12 @@ export default function reducer(state=initialState,action){
 
 			return Object.assign({},state,{modalObject:modalObject,openModal:true});
 	case SET_CURRENT_SQL + FULFILLED:
-			return Object.assign({},state,{currentBook:action.payload.book,currentText:action.payload.text,AuthorBio:'',BookDescription:''});
+			console.log(`spellings ${action.payload.spellings}`);
+			console.log(action.payload.spellings);
+			return Object.assign({},state,{currentBook:action.payload.book,currentText:action.payload.text,spellings:action.payload.spellings,AuthorBio:'',BookDescription:''});
 
 	case  GET_CURRENT + FULFILLED:
-			return Object.assign({},state,{currentText:action.payload.text,currentBook:action.payload.book});
+			return Object.assign({},state,{currentText:action.payload.text,currentBook:action.payload.book,spellings:action.payload.spellings});
 	
 	case INC_BOOKSHELF:
 		return Object.assign({},state,{bookShelf:state.bookShelf +1});

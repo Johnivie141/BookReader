@@ -10,7 +10,8 @@ class EditWord extends Component
 		return (
            <div className="EditWord">
 			<input defaultValue={(this.props && this.props.word)?this.props.word:''} type="text" ref="wordChangeInput" />
-			<button onClick={e=>this.props.submitEdit(this.props.word,this.refs.wordChangeInput.value,this.props.wordNumber)}>Submit</button>
+			<button onClick={e=>this.props.submitEdit(this.props.word,this.refs.wordChangeInput.value,this.props.wordNumber)}>Local</button>
+			<button onClick={e=>this.props.submitEdit(this.props.word,this.refs.wordChangeInput.value,-1)}>Global</button>
 
 		</div>
 		);

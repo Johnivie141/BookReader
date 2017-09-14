@@ -3,7 +3,6 @@ import {connect} from 'react-redux';
 import './About.css';
 import {getAuthorBio,getBookDescription} from'../../store/reducer';
 
-import {Link} from 'react-router-dom';
 
 
 
@@ -44,12 +43,12 @@ class About extends Component{
 		return (
 			<div className="About">
 			  <div className="Author">
-			    {(this.props.AuthorBio)?this.props.AuthorBio:''}
+			   {(this.props.AuthorBio)?this.props.AuthorBio:''}
 			  </div>
 			<br/>
 			<br/>
 			  <div className="Description">
-			    Description:{(this.props.BookDescription)?this.props.BookDescription:''}
+			   {(this.props.BookDescription)?this.props.BookDescription:''}
 			  </div>
 			</div>
 		);

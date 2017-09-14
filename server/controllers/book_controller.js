@@ -3,6 +3,15 @@ const axios = require('axios');;
 
 const merriam = require('/home/ec2-user/security/booktips/merriam_config.js');
 
+function cleanWikiText(text){
+	text=text.replace(/&apos;/g,"'");
+	text=text.replace(/&quot;/g,'"');
+	text=text.replace(/&lt;/g,"<");
+	text=text.replace(/&gt;/g,">");
+
+  return text;
+
+}
 
 
 function formatPage(text){
@@ -15,7 +24,8 @@ let chunkSize=1500;
 
 function getCurrentPage(req,userid,bookid){
    let data ='';
-    return new Promise(
+    if (bookid !=null)
+	return new Promise(
         function (resolve, reject) {
 
             req.app.get("db").get_bookpos([userid,bookid])
@@ -42,29 +52,47 @@ function getCurrentPage(req,userid,bookid){
                                      }) 
                                              let spellingStart = wordMarker - wordcount; 
                                              if (spellingStart <0) spellingStart =0; 
-                                             let spellingEnd = wordMarker + wordcount; 
+                                             let spellingEnd = wordMarker + wordcount;
+			    console.log(`spelling Start ${spellingStart} spelling end ${spellingEnd}`);
                                      req.app.get("db").get_spellings([userid, bookid,spellingStart,spellingEnd]) 
                                         .then(spellings=>{ 
-                                              req.app.get("db").set_bookpos([userid,+req.bookid,startpos+ +pageStart ]).then((result)=>{
-						      resolve({text:strippeddata,spellings:spellings})}) 
-                                    }) 
- 
-
-
-
-
-
+			
+						console.log("GET CURRENT PAGE api debug spellings");
+						console.log(spellings);
+						resolve({text:strippeddata,spellings:spellings})}) 
 
 
                 })
 
     });
+})
+	else
+		res.status(500).end();
 }
-    )
+
+function download(req,res,size){
+
+	let userid = +req.user.id;
+	let bookid = +req.params.bookid;
+	req.app.get("db").get_spellings_book([userid,bookid])
+	.then(result=>{
+            let book_spellings=result;
+           
+		let data='';
+		let readerStream =fs.createReadStream('./books/' + bookid + '.final', { start: 0, end:size });
+                 readerStream.on('data',chunk=>{data +=chunk;});
+                 readerStream.on('end',function(){
+                   res.status(200).json({id:bookid,spellings:book_spellings,text:data})
+
+	})
+	});
 }
+
+
 
 function getNextPage(req,userid,bookid){
    let data ='';
+if (bookid)
     return new Promise(
 	function (resolve, reject) {	
            getCurrentPage(req,userid,bookid)
@@ -103,7 +131,10 @@ function getNextPage(req,userid,bookid){
 
                                           req.app.get("db").get_spellings([userid, bookid,spellingStart,spellingEnd])
                                                 .then(spellings=>{
+	                      req.app.get("db").inc_likes(userid,bookid,1)
+							.then(likeresponse=>{
 							resolve({text:strippeddata,spellings:spellings});
+							})
 
 
                                             })
@@ -111,11 +142,12 @@ function getNextPage(req,userid,bookid){
 
 
 				})
-		}).catch(err=>{reject(err)})
+		})
 	
             });
 	});
 	})
+   else res.status(500).end();
 }
 
 const api = axios.create({
@@ -124,12 +156,36 @@ const api = axios.create({
 
 module.exports ={
 
+	downloadBook:(req,res)=>{
+		console.log("begin server function download Book");
+		let userid=+req.user.id;
+		let bookid = +req.params.bookid;
+		console.log("bookid " + bookid);
+		console.log(typeof bookid);
+		req.app.get("db").get_book([bookid])
+		.then(book=>{
+			console.log("book Object is ");
+			console.log(book);
+		    download(req,res,book.size);
+		})
+		.catch(err=>console.log(err));
+	},
 	changeSpelling:(req,res)=>{
+console.log("IN SPELLINGS");	
 		let bookid= +req.params.bookid;
 		let userid = +req.user.id;
 		let {oldWord,newWord,position} = req.body;
 		req.app.get("db").set_spelling([userid,bookid,oldWord,newWord,position])
-		.then(result=>{res.status(200).send(result)});
+		.then(
+		result=>{
+			console.log("return");
+			res.status(200).send("ok")
+		})
+		.catch(err=>{
+			console.log("error in spellings");
+			console.log(err);
+		})
+		console.log("debug1");
 	},
 
 
@@ -148,12 +204,14 @@ let bookid = +req.params.bookid;
 				api.get(descUrl)
 				.then(description=>{
 
+					console.log(description);
 					let extracts = description.data.match(/<extract[^>]*>((?:(?!<\/extract>)[\s\S])*)<\/extract>/);
 
 					if (extracts){
 
 					extracts=extracts.slice(1,2);
 					 let extract = extracts[0];
+						extract=cleanWikiText(extract);
 					extract=extract.replace(/^([^\r\n]+)[\r\n][\s\S]+$/,"$1");
 
 					res.status(200).send(extract);
@@ -173,6 +231,8 @@ let bookid = +req.params.bookid;
 				let book = result[0];
 
 				let author =book.author;
+	                        author=author.replace(/\([^\)]*\)/g,"");
+				author=author.replace(/^([^,]*),([^,]*),[^,]*$/,"$1,$2");
 				author=author.replace(/^([^,]*),(.*)$/,"$2 $1");
 
 				let authorUrl="http://en.wikipedia.org/w/api.php?format=xml&action=query&prop=extracts&exintro=&explaintext=1&titles=" + author;
@@ -187,7 +247,8 @@ let bookid = +req.params.bookid;
 					extracts=extracts.slice(1,2);
 					let extract = extracts[0];
 					extract=extract.replace(/^([^\r\n]+)[\r\n][\s\S]+$/,"$1");
-					
+		
+					extract=cleanWikiText(extract);
 					res.status(200).send(extract);
 					}
 					else{
@@ -262,7 +323,10 @@ let bookid = +req.params.bookid;
 			   .then(result=>{
 				   getCurrentPage(req,userid,bookid)
 				   .then(textresponse=>{
-                                             res.status(200).json({book:bookid,text:textresponse.text,spellings:textresponse.spellings});
+                                            req.app.get("db").inc_likes([userid,bookid,1]).then(dbresponse=>{ 
+					   
+					   res.status(200).json({book:bookid,text:textresponse.text,spellings:textresponse.spellings});
+					    })
 				   })
 			   })
 		           .catch(err=>{console.log(err); res.status(500).end();
@@ -282,13 +346,15 @@ let bookid = +req.params.bookid;
 				    let bookid = result[0].currentbook;
 				    getCurrentPage(req,userid,bookid)
 				    .then(response=>{
-					   res.status(200).json({book:bookid,text:response.text,spellings:response.spellings});
+	                           
+					    res.status(200).json({book:bookid,text:response.text,spellings:response.spellings});
 				    })
                                  })
 			.catch(err=>{console.log(err);res.status(500).end();})
 		}
 
         },
+
 	getBooks:(req,res)=>{
 		if (!req.user) return res.status(404).send('User not found');
 		else {
@@ -297,6 +363,18 @@ let bookid = +req.params.bookid;
 				shelf=+req.query.shelf;
 			}
 			req.app.get("db").get_books([20,shelf*20])
+			.then(result=>{res.status(200).send(result)})
+		        .catch(err=>res.status(500).end());
+		}
+	},
+	getMyBooks:(req,res)=>{
+		if (!req.user) return res.status(404).send('User not found');
+		else {
+			let shelf=0;
+			if (req.query && req.query.shelf){
+				shelf=+req.query.shelf;
+			}
+			req.app.get("db").get_mybooks([+req.user.id,20,shelf*20])
 			.then(result=>{res.status(200).send(result)})
 		        .catch(err=>res.status(500).end());
 		}
@@ -355,6 +433,7 @@ let bookid = +req.params.bookid;
 
 
 	get_suggestions:(req,res)=>{
+		console.log("GET SUGGESTIONS");
 		if (!req.user) return res.status(404).send('User not found');
 		else {
                       let offset=0;
@@ -362,10 +441,13 @@ let bookid = +req.params.bookid;
 				offset=+req.query.offset;
 			}
 
-			req.app.get("db").get_suggestions([req.user.id,1])
+			console.log("OFFSET " + offset);
+			console.log("USER " + req.user.id);
+
+			req.app.get("db").get_suggestions([+req.user.id,offset])
 			.then(result=>{
 				res.status(200).send(result)})
-			.catch(err=>{console.log(err);res.status(500).end()})
+			.catch(err=>{console.log("SQL ERROR?");console.log(err);res.status(500).end()})
 		}
 	},
 	get_prev_page: (req,res) =>{

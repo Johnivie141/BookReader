@@ -27,7 +27,7 @@ const whitelist=['http://localhost:3000','http://18.220.207.69:3000'];
 
 var corsOptions={
 origin: function (origin,callback){
-	if (origin==="http://18.220.207.69:3000"){
+     if (origin==="http://18.220.207.69:3000" || true){
 		callback(null,true);
 	}
 	else{
@@ -39,7 +39,7 @@ origin: function (origin,callback){
 
 };
 
-        app.use(cors());
+        //app.use(cors());
 
 
 
@@ -108,6 +108,7 @@ app.get('/auth/me',cors(corsOptions),(req,res,next)=>{
 	}
 	else {
 
+		console.log(req.session.user);
 		res.status(200).send(req.user);
 	}
 });
@@ -123,9 +124,11 @@ app.get('/auth',(req,res,next)=>{
 
 // api functions
 //
-app.get('/api/booklist/',cors(corsOptions),bookCTRL.getBooks);
 
-app.get('/api/book/:bookid',bookCTRL.get_book_byid);
+app.get('/api/book/:bookid/download',cors(corsOptions),bookCTRL.downloadBook);
+app.get('/api/booklist/',cors(corsOptions),bookCTRL.getBooks);
+app.get('/api/mybooklist/',cors(corsOptions),bookCTRL.getMyBooks);
+
 app.get('/api/author/:authorname/books',bookCTRL.get_book_byauthor);
 app.get('/api/suggestions',cors(corsOptions),bookCTRL.get_suggestions);
 app.get('/api/suggestiontext',cors(corsOptions),bookCTRL.get_suggestiontext);
@@ -137,6 +140,14 @@ app.get('/api/book/:bookid/setcurrent',cors(corsOptions),bookCTRL.setCurrent);
 app.get('/api/word',cors(corsOptions),bookCTRL.dictionaryLookup);
 app.get('/api/book/:bookid/description',cors(corsOptions),bookCTRL.getBookDescription);
 app.get('/api/book/:bookid/authorbio',cors(corsOptions),bookCTRL.getAuthorBio);
-app.post('/api/book/:bookid/spelling',cors(corsOptions),bookCTRL.changeSpelling);
+app.options('/api/book/:bookid/spelling',cors(corsOptions),
+function(req,res,next){
+}
+);
+
+app.post('/api/book/:bookid/spelling',bookCTRL.changeSpelling);
+
+app.get('/api/book/:bookid',bookCTRL.get_book_byid);
+
 
 app.listen(port,()=>{console.log(`Listening on port ${port}`);});

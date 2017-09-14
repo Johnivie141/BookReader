@@ -1,8 +1,22 @@
 .Library {
-  font-size: 2rem;
+  font-size: 2rem; }
+
+.books {
   display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap; }
+  justify-content: center;
+  align-items: center; }
 
 .book {
-  margin: 20px; }
+  margin: 20px;
+  float: left; }
+
+.container-fluid {
+  width: 100vw; }
+
+.Books {
+  width: 100vw; }
+
+.library_next_previous {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px; }

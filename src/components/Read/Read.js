@@ -3,8 +3,7 @@ import {connect} from 'react-redux';
 import Parser from 'html-react-parser';
 import './Read.css';
 import Hammer from 'react-hammerjs';
-import {changeWord,setModal,closeModal,DictionaryLookup,getCurrent,getNextPage,getPrevPage} from '../../store/reducer';
-import {Link} from 'react-router-dom';
+import {downloadBook,changeWord,setModal,closeModal,DictionaryLookup,getCurrent,getNextPage,getPrevPage} from '../../store/reducer';
 import Word from '../Word/Word';
 import reactStringReplace from 'react-string-replace';
 import Modal from 'react-modal';
@@ -20,10 +19,18 @@ class Read extends Component
 	constructor(props){
 		super(props);
 		this.popupHandler = this.popupHandler.bind(this);
+	        this.submitEdit = this.submitEdit.bind(this);
+	
+	
 	}
 
 
-
+	downloadMyBook(){
+		if (this.props && this.props.currentBook && this.props.downloadBook)
+		{
+			this.props.downloadBook(this.props.currentBook);
+		}
+	}
 //
 	popupHandler(wordNumber , word){
              let initialModal =(
@@ -47,9 +54,8 @@ class Read extends Component
 
 
 	submitEdit(oldWord,newWord,wordNumber){
-	console.log("submit word " + oldWord + " TO " + newWord);
-		console.log("submit number " + wordNumber);
-	this.props.changeWord(this.props.currentBook,oldWord,newWord,wordNumber);
+
+		this.props.changeWord(this.props.currentBook,oldWord,newWord,wordNumber,this.props.spellings);
 
 	}
 
@@ -96,6 +102,22 @@ closeModal(){
 	this.props.closeModal();
 }
 
+hasSpellingChange(position,oldword,spellings){
+	if (! spellings || ! spellings.filter) return '';
+
+	let filterArray=spellings.filter(data=>{
+           return (data.position===position || (data.position <0 && data.oldword === oldword))
+	});
+	
+	if (filterArray && filterArray.length >0){
+		return filterArray[0].newword;
+	}
+	else return '';
+}
+
+
+
+
 
 render(){
 
@@ -137,16 +159,16 @@ if (this.props && this.props.user)
 
 let textProp='';
 if (this.props && this.props.currentText){
-
 	let wordcount=0;
 	let offset=0;
 	textProp=this.props.currentText.replace(/((?:\b\w+)|(?:<wc\d+>))/g,function(match,match1){
-          
-		if (match1.indexOf("<wc")!== -1)
+         
+		if (match.indexOf("<wc") === -1){
 			wordcount++;
+		}
 		else{
 			if (offset ===0){
-				match1=match1.replace(/[^\d]+/g,"");
+				match1=match.replace(/[^\d]+/g,"");
 				offset = +match1  - wordcount;
 				if (offset <0) offset=0;
 			}
@@ -162,11 +184,20 @@ textProp = textProp.replace(/\r\n?(\r\n?)+/g,"\r<br />");
 	textProp = reactStringReplace(textProp,/\b(\w+)(?!(?:(?:\w)|(?: \/>)))/g, (match,i)=>{
 
 	let wordNumber= wordcount + offset;
-	wordcount++;
+		wordcount++;
 	let wordKey= "word" + wordNumber;
+	if (this.hasSpellingChange(wordNumber,match,this.props.spellings)){
+	 let changedWord=this.hasSpellingChange(wordNumber,match,this.props.spellings);
+		return (
+	         <Word popupHandler={this.popupHandler} wordnumber={wordNumber} wordtext={changedWord} oldword={match}  key={wordKey}/>)
+
+	}
+	else{
+
 	return(
 	<Word popupHandler={this.popupHandler} wordnumber={wordNumber} wordtext={match} key={wordKey}/>)
-})
+        }
+	})
 
 let brcount=0;
 textProp= reactStringReplace(textProp,/<br \/>/g,(match,i)=>{
@@ -195,33 +226,18 @@ const modalStyle = {
 
         return (
                 <div className="Read">
-
 		<Modal isOpen={this.props.openModal} style={modalStyle} 
 		  contentLabel="DictionaryLookeup">
 		  {(this.props && this.props.modalObject)?this.props.modalObject:''} 
                   <button onClick={()=>this.closeModal()}>close</button>
 
 		</Modal>
-<nav className="navbar navbar-inverse">
-  <div className="container-fluid">
-    <div className="navbar-header">
-      <Link className="navbar-brand" to="/home">BookTips</Link>
-    </div>
-    <ul className="nav navbar-nav">
-      <li className={(loggedIn)?"show":"hide"}><Link to="/library">Library</Link></li>
-      <li className={(loggedIn)?"show":"hide"}><Link to="/about">About</Link></li>
-        </ul>
-<ul className="nav navbar-nav">
-      {logintext}
-    </ul>
-  </div>
-</nav>
 
 
 
                 <div className="Book">
 
-                
+        <div onClick={(e)=>this.downloadMyBook()}>Download Book</div>        
                 <Hammer onSwipe={(e)=>this.handleSwipe(e)}>
                 <div  className="BookText">
                      {textProp}
@@ -249,7 +265,7 @@ function mapStateToProps(state,ownProps){
 
 
 
-export default connect(mapStateToProps, {changeWord:changeWord,setModal:setModal,closeModal:closeModal,DictionaryLookup:DictionaryLookup,getCurrent,getNextPage,getPrevPage})(Read);
+export default connect(mapStateToProps, {downloadBook:downloadBook,changeWord:changeWord,setModal:setModal,closeModal:closeModal,DictionaryLookup:DictionaryLookup,getCurrent,getNextPage,getPrevPage})(Read);
 
 
 

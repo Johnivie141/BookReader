@@ -5,7 +5,6 @@
   padding-bottom: 60px; }
 
 .BookText {
-  background-color: white;
   padding: 60px; }
 
 .Book {
@@ -16,7 +15,10 @@
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 32px;
-  padding-right: 32px; }
+  padding-right: 32px;
+  background-image: url("../../images/bookpage.jpg");
+  background-repate: no-repeat;
+  background-size: cover; }
 
 .word {
   color: blue; }

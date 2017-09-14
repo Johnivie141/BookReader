@@ -4,7 +4,6 @@ import{ setLike,getSuggestionText} from '../../store/reducer';
 import './Suggestions.css';
 import Parser from 'html-react-parser';
 import Hammer from 'react-hammerjs';
-import {Link} from 'react-router-dom';
 class Suggestions extends Component
 {
  handleSwipe(ev) {
@@ -76,15 +75,7 @@ if (this.props)
 	}
 
 	return (
-		<div className="Suggestions">
-		<nav className="navbar navbar-inverse">
-		<div className="container-fluid">
-		<div className="navbar-header"><Link className="navbar-brand" to="/home">BookTips</Link></div>
-		  <ul className="nav navbar-nav">
-		    <li>{(this.props && this.props.user && this.props.user.data )?this.props.user.data.user_name:''}</li>
-                  </ul>
-		</div>
-		</nav>
+	<div className="Suggestions">
 		<div className="Book">
 
 		<Hammer onSwipe={(e)=>this.handleSwipe(e)}>
@@ -94,7 +85,7 @@ if (this.props)
 		</Hammer>
 
 		 </div>
-		</div>
+	</div>
 	);
 
 
