@@ -1,5 +1,6 @@
+@import '../../variables.scss';
 .navbar{
-	height:80px;
+	height:$smallnav-size;
 	padding:0px;
 	margin:0px;
 	font-size:2rem;
@@ -7,3 +8,21 @@
 .navbar-brand{
 	font-size:2rem;
 }
+body {
+	padding-top: $smallnav-size;
+}
+.dropdown-menu
+{
+	font-size:2rem;
+}
+
+@media (max-width:767px){
+	body{
+		padding-top:$largenav-size;
+	   }
+	   .navbar{
+		height:$largenav-size;
+	}
+}
+
+

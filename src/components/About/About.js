@@ -42,14 +42,14 @@ class About extends Component{
 
 		return (
 			<div className="About">
+			<div className="AboutContainer">
 			  <div className="Author">
 			   {(this.props.AuthorBio)?this.props.AuthorBio:''}
 			  </div>
-			<br/>
-			<br/>
 			  <div className="Description">
 			   {(this.props.BookDescription)?this.props.BookDescription:''}
 			  </div>
+			</div>
 			</div>
 		);
 

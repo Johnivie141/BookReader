@@ -1,11 +1,26 @@
 import axios from 'axios';
-import LZString from 'lz-string';
-const localApiUrl='http://18.220.207.69:3030';
+//import LZString from 'lz-string';
+const localApiUrl='http://www.booktips.pro:3000';
 
 const api = axios.create({
 	withCredentials:true
 });
 
+export function apiGetSettings(){
+	return api.get(localApiUrl + '/api/settings').
+		then(response=>{
+			console.log(response.data);
+			return response.data;
+		});
+}
+export function apiSetSettings(settings){
+ console.log("STORING SETTINGS");
+console.log(settings);
+	return axios.post(localApiUrl + '/api/settings',{settings:settings})
+	. then(response=>{
+		return response.data;
+	});
+}
 
 
 export function apiGetAuthorBio(bookid){
@@ -45,6 +60,8 @@ return api.get(localApiUrl + '/api/word/?word=' + word)
 export function apiSetCurrent(bookid){
 	return api.get(localApiUrl + '/api/book/' +bookid + '/setcurrent')
 	          .then(response=>{
+			  console.log("API set current");
+			  console.log(response.data);
 		       return response.data;
 		  })
 	          .catch(err=>console.log(err));
@@ -62,14 +79,6 @@ export function apiGetCurrent(){
 }
 
 
-function supports_html5_storage() {
-  try {
-    return 'localStorage' in window && window['localStorage'] !== null;
-  } catch (e) {
-    return false;
-  }
-}
-var supportsHtml5Storage=supports_html5_storage();
 export function apiDownload(bookid){
 	
 	return api.get(localApiUrl + '/api/book/' + bookid + '/download')
@@ -88,15 +97,19 @@ export function apiSetLike(bookid,like){
 		  })
 		.catch(err=>{console.log(err); return ''});
 }
-export function apiGetBooks(bookShelf,filter){
-console.log("FILTER IS " +filter);
-	switch(filter){
+export function apiGetBooks(bookShelf,filter,filterChange){
+	if (filterChange){
+		filter = Object.assign({},filter,filterChange);
+	}
+	console.log("filter");
+	console.log(filter);
+	switch(filter.library){
 	case 'mine':
 			console.log("my books filter " + filter);
-          return api.get(localApiUrl + '/api/mybooklist?shelf=' + bookShelf).then(books=>{return books.data}); 
+          return api.get(localApiUrl + '/api/mybooklist?shelf=' + bookShelf + '&searchTerm=' + filter.searchterm).then(books=>{return books.data}); 
 	  default:
 			console.log("all books");
-	   return api.get(localApiUrl + '/api/booklist?shelf=' + bookShelf)
+	   return api.get(localApiUrl + '/api/booklist?shelf=' + bookShelf + '&searchTerm=' + filter.searchterm)
 	     .then(books=>{return books.data});
         }
 }
@@ -144,19 +157,22 @@ export function apiGetPrevPage(id){
 
 
 export function apiChangeSpelling(bookid,oldWord,newWord,position,spellings){
-	
-	console.log("debug inside api spellings2");
-	console.log(spellings);
-	
-	api.post(localApiUrl + '/api/book/' + bookid + '/spelling' ,{oldWord:oldWord,newWord:newWord,position:position}); 
+	return new Promise(function(resolve,reject){
 
-	console.log("debug inside api spellings");
-	console.log(spellings);
+	
+	   api.get(localApiUrl + '/api/book/' + bookid + '/spelling?oldword=' + oldWord + "&newword=" + newWord + "&position=" + position); 
+
+	spellings = spellings.filter(spelling=>{return spelling.position != position});
+
 	spellings.push({
 	position:position,
 	oldword:oldWord,
 	newword:newWord});
-	return spellings;
+	console.log("debug inside api spellings");
+	console.log(spellings);
+
+	 resolve(spellings);
+	})
 }
 
 

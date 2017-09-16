@@ -1,6 +1,6 @@
 import React from 'react';
 import Parser from 'html-react-parser';
-import {apiDownload,apiChangeSpelling,apiGetAuthorBio,apiGetBookDescription,apiMerriamDictionary,apiGetCurrent,apiSetCurrent,apiGetNextPage,apiGetPrevPage,apiGetPage,apiSetLike,apiGetSuggestionText,apiGetBooks,apiGetBookById,apiGetBooksByAuthor,apiGetSuggestions,apiGetUser,apiLogin} from '../services/apiServices';
+import {apiGetSettings,apiSetSettings,apiDownload,apiChangeSpelling,apiGetAuthorBio,apiGetBookDescription,apiMerriamDictionary,apiGetCurrent,apiSetCurrent,apiGetNextPage,apiGetPrevPage,apiSetLike,apiGetSuggestionText,apiGetBooks,apiGetBookById,apiGetBooksByAuthor,apiGetSuggestions,apiGetUser,apiLogin} from '../services/apiServices';
 
 
 const FULFILLED="_FULFILLED";
@@ -40,7 +40,36 @@ const PREV_SHELF="PREV_SHELF";
 
 const SET_FILTER="SET_FILTER";
 const DOWNLOAD="DOWNLOAD";
+const ANIMATE_PAGE_TURN="ANIMATE_PAGE_TURN";
 
+const GET_SETTINGS="GET_SETTINGS";
+const CHANGE_SETTINGS="CHANGE_SETTINGS";
+const SET_LIBRARY_FILTER="SET_LIBRARY_FILTER";
+export function setLibrarySearch(filter){
+	return {
+		type:SET_LIBRARY_FILTER,
+		payload:filter
+	}
+}
+export function changeSettings(newSettings){
+	return {
+		type:CHANGE_SETTINGS,
+		payload:apiSetSettings(newSettings)
+	}
+}
+export function getSettings(){
+	return {
+		type:GET_SETTINGS,
+		payload:apiGetSettings()
+	}
+}
+
+export function  animatePageTurn(turnClass){
+	return {
+		type:ANIMATE_PAGE_TURN,
+		payload:turnClass
+	}
+}
 export function downloadBook(bookid)
 {
 	return {
@@ -49,7 +78,6 @@ export function downloadBook(bookid)
 	}
 }
 export function setFilter(filter){
-	console.log("CREATE SET_FILTER ACTION value " + filter);
 	return {
 		type:SET_FILTER,
 		payload:filter
@@ -70,7 +98,7 @@ export function prevShelf(shelf,filter){
 
 
 export function changeWord(bookid,oldWord,newWord,position,spellings){
-	console.log("debug reducer spellings");
+	console.log("change speling ADD " +oldWord + " TO " +newWord);
 	console.log(spellings);
 	return {
 		type: CHANGE_SPELLING,
@@ -143,6 +171,7 @@ export function incBookshelf(){
 
 
 export function getPrevPage(bookid){
+	//window.scrollTo(0,0);
 	return {
 		type:GET_PREV_PAGE,
 		payload:apiGetPrevPage(bookid)
@@ -150,7 +179,9 @@ export function getPrevPage(bookid){
 }
 
 export function getNextPage(bookid){
-	 return {
+
+	//window.scrollTo(0,0);
+	return {
               type:GET_NEXT_PAGE,
 	      payload:apiGetNextPage(bookid)
 	 }
@@ -176,12 +207,11 @@ export function Login(){
 		payload:apiLogin()
 	}
 }
-export function getBooks(bookShelf,filter){
-console.log("calling api function filter is " + filter);
+export function getBooks(bookShelf,filter,filterChange){
 	
 	return {
 		type:GET_BOOKS,
-		payload:apiGetBooks(bookShelf,filter)
+		payload:apiGetBooks(bookShelf,filter,filterChange)
 	}
 }
 
@@ -221,13 +251,17 @@ let initialState={
     	bookShelf:0,
 	currentText:'',
 	currentBook:null,
-        openModal:false,
+        currentTitle:'',
+	openModal:false,
 	AuthorBio:'',
 	BookDescription:'',
         modalObject:null,
 	spellings:[],
-	filter:"all",
-	localBooks:[]
+	filter:{library:"all",searchterm:''},
+	localBooks:[],
+	turnPage:'',
+	settings:{fontFamily:"Times New Roman"}
+
 }
 
 
@@ -237,7 +271,22 @@ export default function reducer(state=initialState,action){
 	console.log(action.type);
 	switch(action.type)
 	{
+        case SET_LIBRARY_FILTER: 
+			
+	     return Object.assign({},state,{bookShelf:0,filter:Object.assign({},state.filter,{searchterm:action.payload})});
+
+	case GET_SETTINGS +FULFILLED:
 	
+			let newSettingsArray = Object.assign({},state.settings,action.payload,{user_name:state.user.data.user_name});
+			return Object.assign({},state,{settings:newSettingsArray});
+
+	case CHANGE_SETTINGS+ FULFILLED:
+			let newSettings = Object.assign({},state.settings,action.payload);
+			return Object.assign({},state,{settings:newSettings});
+
+	case ANIMATE_PAGE_TURN:
+			return Object.assign({},state,{turnPage:action.payload});
+
 	case DOWNLOAD + FULFILLED:
 
 			let newLocalBooks = state.localBooks.slice(0);
@@ -246,8 +295,7 @@ export default function reducer(state=initialState,action){
 
 		
 	case SET_FILTER:
-			console.log("FILTER SET TO " + action.payload);
-	     return Object.assign({},state,{filter:action.payload});
+	     return Object.assign({},state,{bookShelf:0,filter:Object.assign({},state.filter,{searchterm:action.payload})});
 
 	case NEXT_SHELF + FULFILLED:
 			let nextShelf = state.bookShelf +1;
@@ -255,10 +303,13 @@ console.log("next shelf" + nextShelf);
 			return Object.assign({},state,{bookShelf:nextShelf,books:action.payload});
 	case PREV_SHELF +FULFILLED:
 			return Object.assign({},state,{bookShelf:state.bookShelf -1,books:action.payload});
-	case CHANGE_SPELLING:
+	case CHANGE_SPELLING + "_PENDING":
+		
                     return Object.assign({},state,{modalObject:null,openModal:false});
 	case CHANGE_SPELLING + FULFILLED:
 	
+			console.log("NEW SPELLING OBJECT");
+			console.log(action.payload);
 			return Object.assign({},state,{spellings:action.payload,modalObject:null,openModal:false});
 
 	case GET_AUTHOR_BIO + FULFILLED:
@@ -273,25 +324,26 @@ console.log("next shelf" + nextShelf);
 	case SET_MODAL:
 			return Object.assign({},state,{openModal:true,modalObject:action.payload});
 	case DICTIONARY_LOOKUP + FULFILLED:
-	                console.log("Dictionary lookup fulfilled");
 			let modalObject = (<div><h1>{action.payload.word}</h1><p>{Parser(action.payload.meaning)}</p></div>);
 
 			return Object.assign({},state,{modalObject:modalObject,openModal:true});
 	case SET_CURRENT_SQL + FULFILLED:
-			console.log(`spellings ${action.payload.spellings}`);
-			console.log(action.payload.spellings);
-			return Object.assign({},state,{currentBook:action.payload.book,currentText:action.payload.text,spellings:action.payload.spellings,AuthorBio:'',BookDescription:''});
+			return Object.assign({},state,{currentBook:action.payload.book,currentText:action.payload.text,spellings:action.payload.spellings,AuthorBio:'',BookDescription:'',currentTitle:action.payload.title,turnPage:''});
 
 	case  GET_CURRENT + FULFILLED:
-			return Object.assign({},state,{currentText:action.payload.text,currentBook:action.payload.book,spellings:action.payload.spellings});
+			return Object.assign({},state,{currentText:action.payload.text,currentBook:action.payload.book,spellings:action.payload.spellings,currentTitle:action.payload.title,turnPage:''});
 	
 	case INC_BOOKSHELF:
 		return Object.assign({},state,{bookShelf:state.bookShelf +1});
 
 	case GET_NEXT_PAGE + FULFILLED:
-			return Object.assign({},state,{currentText:action.payload.text,spellings:action.payload.spellings});
+			console.log(action.payload);
+			return Object.assign({},state,{currentText:action.payload.text,spellings:action.payload.spellings,turnPage:''});
+
+
         case GET_PREV_PAGE + FULFILLED:
-			return Object.assign({},state,{currentText:action.payload.text,spellings:action.payload.spellings});
+			console.log(action.payload);
+			return Object.assign({},state,{currentText:action.payload.text,spellings:action.payload.spellings,turnPage:''});
 	
 
 	case SET_LIKE + FULFILLED:

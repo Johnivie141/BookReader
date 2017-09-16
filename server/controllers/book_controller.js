@@ -156,7 +156,58 @@ const api = axios.create({
 
 module.exports ={
 
-	downloadBook:(req,res)=>{
+	getSettings:(req,res)=>{
+		if (!req.user){
+			console.log("USER NOT FOUND");
+			return res.status(404).send('User not found');
+		}
+		else{
+			console.log("user id " + req.user.id);
+			req.app.get("db").get_settings([+req.user.id]).
+                        then(response=>{
+				console.log("response came");
+			let settingsObject={};
+				console.log("response");
+				console.log(response);
+				response.map(result=>{
+				settingsObject[result.keyname]=result.value;
+				});
+
+				console.log(settingsObject);
+	
+				res.status(200).send(settingsObject);
+			})
+			.catch(err=>console.log(err));
+
+		}
+	},
+	setSettings:(req,res)=>{
+		if (!req.user){
+			console.log("USER NOT FOUND");
+			return res.status(404).send('User not found');
+		}
+	        else{
+		
+			let PromiseArray=[];
+			let {settings}=req.body;
+			for (let prop in settings){
+			console.log(prop + " => " + settings[prop]);
+				PromiseArray.push(req.app.get("db").set_settings([+req.user.id,prop,settings[prop]]));
+			}
+			      return Promise.all(PromiseArray).then(
+			   response=>	  {    res.status(200).send(settings);
+		      })
+
+
+
+		}
+		
+		
+		
+	},
+		
+		
+		downloadBook:(req,res)=>{
 		console.log("begin server function download Book");
 		let userid=+req.user.id;
 		let bookid = +req.params.bookid;
@@ -174,7 +225,10 @@ module.exports ={
 console.log("IN SPELLINGS");	
 		let bookid= +req.params.bookid;
 		let userid = +req.user.id;
-		let {oldWord,newWord,position} = req.body;
+		oldWord = req.query.oldword;
+		newWord = req.query.newword;
+		position = +req.query.position;
+		console.log("SQL CHANGE FROM " +oldWord + " TO " + newWord);
 		req.app.get("db").set_spelling([userid,bookid,oldWord,newWord,position])
 		.then(
 		result=>{
@@ -247,7 +301,8 @@ let bookid = +req.params.bookid;
 					extracts=extracts.slice(1,2);
 					let extract = extracts[0];
 					extract=extract.replace(/^([^\r\n]+)[\r\n][\s\S]+$/,"$1");
-		
+	
+					extract=extract.replace(/\(; */,"(");
 					extract=cleanWikiText(extract);
 					res.status(200).send(extract);
 					}
@@ -324,9 +379,10 @@ let bookid = +req.params.bookid;
 				   getCurrentPage(req,userid,bookid)
 				   .then(textresponse=>{
                                             req.app.get("db").inc_likes([userid,bookid,1]).then(dbresponse=>{ 
-					   
-					   res.status(200).json({book:bookid,text:textresponse.text,spellings:textresponse.spellings});
-					    })
+			       req.app.get("db").get_book([bookid])
+						    .then(book=>{
+					    res.status(200).json({book:bookid,text:textresponse.text,title:book[0].title,author:book[0].author,spellings:textresponse.spellings});
+					    })})
 				   })
 			   })
 		           .catch(err=>{console.log(err); res.status(500).end();
@@ -346,8 +402,12 @@ let bookid = +req.params.bookid;
 				    let bookid = result[0].currentbook;
 				    getCurrentPage(req,userid,bookid)
 				    .then(response=>{
-	                           
-					    res.status(200).json({book:bookid,text:response.text,spellings:response.spellings});
+	
+					    req.app.get("db").get_book([bookid])
+					    .then(book=>{
+
+					    res.status(200).json({book:bookid,text:response.text,spellings:response.spellings,title:book[0].title,author:book[0].author});
+					    })
 				    })
                                  })
 			.catch(err=>{console.log(err);res.status(500).end();})
@@ -358,11 +418,18 @@ let bookid = +req.params.bookid;
 	getBooks:(req,res)=>{
 		if (!req.user) return res.status(404).send('User not found');
 		else {
+			console.log("getBooks");
 			let shelf=0;
 			if (req.query && req.query.shelf){
 				shelf=+req.query.shelf;
 			}
-			req.app.get("db").get_books([20,shelf*20])
+
+			
+			let searchTerm = (req.query.searchTerm)?req.query.searchTerm:'';
+			searchTerm = '%' + searchTerm.toLowerCase()  + '%';
+
+			console.log(`searchterm ${searchTerm} limit 20 shelf ${shelf}`);
+			req.app.get("db").get_books([searchTerm,20,shelf*20])
 			.then(result=>{res.status(200).send(result)})
 		        .catch(err=>res.status(500).end());
 		}
@@ -374,7 +441,10 @@ let bookid = +req.params.bookid;
 			if (req.query && req.query.shelf){
 				shelf=+req.query.shelf;
 			}
-			req.app.get("db").get_mybooks([+req.user.id,20,shelf*20])
+			let searchTerm = (req.query.searchTerm)?req.query.searchTerm:'';
+			searchTerm = '%' + searchTerm.toLowerCase()  + '%';
+
+			req.app.get("db").get_mybooks([searchTerm,+req.user.id,20,shelf*20])
 			.then(result=>{res.status(200).send(result)})
 		        .catch(err=>res.status(500).end());
 		}

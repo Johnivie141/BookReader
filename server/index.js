@@ -9,9 +9,10 @@ const env=require('dotenv').config({
       , session = require('express-session')
       , postgres_config = require('/home/ec2-user/security/booktips/postgres_config')
       , server_config = require('/home/ec2-user/security/booktips/server_config')
-      , port=3030
+      , port=3000
       , app=express()
-      , bookCTRL = require('./controllers/book_controller');
+
+	, bookCTRL = require('./controllers/book_controller');
 
 massive({
 	host:postgres_config.host,
@@ -27,7 +28,8 @@ const whitelist=['http://localhost:3000','http://18.220.207.69:3000'];
 
 var corsOptions={
 origin: function (origin,callback){
-     if (origin==="http://18.220.207.69:3000" || true){
+	console.log("origin " + origin);
+     if (true || origin==="http://www.booktips.pro:3030" ||  origin =="http://18.220.134.202:3030"){
 		callback(null,true);
 	}
 	else{
@@ -57,7 +59,8 @@ app.use(session({
 	saveUninitialized:false
 
 }));
-app.use(express.static(__dirname + '/..build'));
+
+app.use(express.static(__dirname + '/../build'));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -85,7 +88,7 @@ passport.use(new Auth0Strategy({
 
 
 app.get('/auth/callback',passport.authenticate('auth0',{
-	successRedirect:'http://18.220.207.69:3000/suggestions',
+	successRedirect:'http://www.booktips.pro:3000/home',
 	failureRedirect:'http://www.bing.com'
 })
 );
@@ -140,14 +143,24 @@ app.get('/api/book/:bookid/setcurrent',cors(corsOptions),bookCTRL.setCurrent);
 app.get('/api/word',cors(corsOptions),bookCTRL.dictionaryLookup);
 app.get('/api/book/:bookid/description',cors(corsOptions),bookCTRL.getBookDescription);
 app.get('/api/book/:bookid/authorbio',cors(corsOptions),bookCTRL.getAuthorBio);
-app.options('/api/book/:bookid/spelling',cors(corsOptions),
-function(req,res,next){
-}
-);
 
-app.post('/api/book/:bookid/spelling',bookCTRL.changeSpelling);
+app.get('/api/book/:bookid/spelling',cors(corsOptions),bookCTRL.changeSpelling);
 
 app.get('/api/book/:bookid',bookCTRL.get_book_byid);
+
+app.get('/api/settings',bookCTRL.getSettings);
+app.post('/api/settings',bookCTRL.setSettings);
+
+
+
+
+const path = require('path');
+
+
+
+app.get('*',cors(corsOptions),(req,res)=>{
+	res.sendFile(path.join(__dirname,'..', 'build' ,'index.html'));
+});
 
 
 app.listen(port,()=>{console.log(`Listening on port ${port}`);});

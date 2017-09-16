@@ -1,10 +1,8 @@
 import React, { Component} from 'react';
 import {connect} from 'react-redux';
-import {Link} from 'react-router-dom';
 import {getUser,Login} from '../../store/reducer';
 import './Main.css'
 import './reset.css';
-import LibraryImage from '../../images/library.jpg';
 
 class Main extends Component{
 

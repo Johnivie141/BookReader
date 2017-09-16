@@ -1,6 +1,6 @@
 import React , {Component} from 'react';
 import {connect} from 'react-redux';
-import {setFilter,setCurrentSQL,getBooks,nextShelf,prevShelf} from '../../store/reducer';
+import {setLibrarySearch,setFilter,setCurrentSQL,getBooks,nextShelf,prevShelf} from '../../store/reducer';
 import './Library.css';
 
 
@@ -44,10 +44,22 @@ console.log(this.props);
 bookFilterChange(event){
 	if (this.props && this.props.setFilter){
 		this.props.setFilter(event.target.value);
-	        this.props.getBooks(this.props.bookShelf,event.target.value);
+	        this.props.getBooks(this.props.bookShelf,this.props.filter,{library:event.target.value});
 	}
 }
+useSearchFilter(searchValue)
+{
+	if (this.props && this.props.setLibrarySearch){
 
+	   this.props.setLibrarySearch(searchValue);
+	   this.props.getBooks(this.props.bookShelf,this.props.filter,{searchterm:searchValue});
+
+
+	}
+
+
+
+}
 render(){
 
 	let Books='';
@@ -65,23 +77,24 @@ render(){
 	   });
 	}
 
-
-
-
-
-
-
-
 return (
 	<div className="Library">
         
     <div className="library_next_previous">
       <div className="library_previous"><button  className="btn btn-primary" onClick={e=>this.shelfPrevious()}>Previous</button></div>
+
+	<div className="Search">
+	<input ref="libraryFilter" type="text" className="libraryFilter" /><button className="btn btn-primary" onClick={e=>{this.useSearchFilter(this.refs.libraryFilter.value)}}>Search</button>
+	</div>
+	
 	<select onChange={(e)=>this.bookFilterChange(e)}>
 	<option value="all">All Books</option>
 	<option value="mine">My Books</option>
 	</select>
-      <div className="library_next"> <button className="btn btn-primary"  onClick={e=>this.shelfNext()}>Next</button></div>
+      
+	
+	
+	<div className="library_next"> <button className="btn btn-primary"  onClick={e=>this.shelfNext()}>Next</button></div>
         
 	
   </div>
@@ -108,7 +121,7 @@ return state;
 
 
 
-export default connect(mapStateToProps, {setFilter:setFilter,setCurrentSQL:setCurrentSQL,getBooks:getBooks,nextShelf:nextShelf,prevShelf:prevShelf})(Library);
+export default connect(mapStateToProps, {setLibrarySearch:setLibrarySearch,setFilter:setFilter,setCurrentSQL:setCurrentSQL,getBooks:getBooks,nextShelf:nextShelf,prevShelf:prevShelf})(Library);
 
 
 

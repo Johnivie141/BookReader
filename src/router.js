@@ -5,6 +5,7 @@ import Suggestions from './components/Suggestions/Suggestions';
 import Read from './components/Read/Read';
 import Library from './components/Library/Library';
 import About from './components/About/About';
+import Settings from './components/Settings/Settings';
 
 export default (
 	<Switch>
@@ -13,6 +14,7 @@ export default (
         <Route path="/read" component={Read} />
 	<Route path="/library" component={Library} />
 	<Route path="/about" component={About} />
+	<Route path="/settings" component={Settings} />
 	</Switch>
 );
 

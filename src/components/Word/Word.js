@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-
+import './Word.css';
 
 
 class Word extends Component{
@@ -9,9 +9,10 @@ class Word extends Component{
 
 
 render(){
+let wordClass=(this.props.oldword)?"hasOldWord":"";
 
  return (
-	<span onClick={(e)=>{this.props.popupHandler(this.props.wordnumber,this.props.wordtext)}}>{this.props.wordtext}</span>
+	<span  className={wordClass} onClick={(e)=>{this.props.popupHandler(this.props.wordnumber,this.props.wordtext,this.props.oldword)}}>{this.props.wordtext}</span>
  );
  }
 }

@@ -2,8 +2,16 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import './Nav.css';
 import {Link} from 'react-router-dom';
+
 import 'bootstrap/dist/css/bootstrap.css';
-import {getUser} from '../../store/reducer'; 
+import {getUser, getSettings} from '../../store/reducer'; 
+
+var jQuery = require('jquery');
+var $ = jQuery;
+window.jQuery = require('jquery');
+
+
+var bootstrap = require('bootstrap/dist/js/bootstrap.min.js');
 
 export class Nav extends Component{
 
@@ -20,23 +28,24 @@ export class Nav extends Component{
 
 	render(){
 		
-        let  logintext=(<li> <a href="http://18.220.207.69:3030/auth">Login</a></li>);
+        let  logintext=(<li> <a href="http://www.booktips.pro:3000/auth">Login</a></li>);
           let loggedIn = false;
-          if (this.props && this.props.user){
-                  loggedIn=true;
-          }
 
 if (this.props && this.props.user)
           {
+                  loggedIn=true;
+		  if (this.props.getSettings && (!this.props.settings  || !this.props.settings["user_name"])  ){
+			  this.props.getSettings();
+
+		  }
                   logintext=(
                            <li className="dropdown">
-                                <a className="dropdown-toggle" data-toggle="drop  down" href="#">
+                                <a className="dropdown-toggle" data-toggle="dropdown" href="#">
                              {this.props.user.data.user_name}
 
                              <span className="caret"></span></a>
-                            <ul className="dropdown-menu">
-                             <li><a href="#">Settings</a></li>
-                             <li><a href="#">Setting2</a></li>
+                            <ul className="dropdown-menu navbar-nav nav  navbar-inverse">
+                             <li><Link to="/settings">Settings</Link></li>
                            </ul>
 
                             </li>
@@ -47,7 +56,7 @@ if (this.props && this.props.user)
 
 
  return (
-	 <nav className="navbar navbar-inverse">
+	 <nav className="navbar navbar-inverse  navbar-fixed-top">
   <div className="container-fluid">
     <div className="navbar-header">
       <Link className="navbar-brand" to="/home">BookTips</Link>
@@ -82,4 +91,4 @@ function mapStateToProps(state,ownProps){
 
 
 
-export default connect(mapStateToProps,{getUser:getUser})(Nav);
+export default connect(mapStateToProps,{getSettings:getSettings,getUser:getUser})(Nav);

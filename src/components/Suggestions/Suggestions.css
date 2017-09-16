@@ -1,12 +1,63 @@
 .Book {
-  font-size: 2rem;
-  margin: 60px;
+  position: absolute;
+  width: 80vw;
   display: flex;
   justify-content: space-around;
+  align-items: center;
+  padding-left: 32px;
+  padding-right: 32px;
+  padding-top: 32px;
+  padding-bottom: 32px;
+  background-image: url("../../images/bookpage.jpg");
+  background-repeat: no-repeat;
+  background-size: cover; }
+
+.TipBookContainer {
+  position: absolute;
+  top: calc($smallnav-size +30px);
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  margin: 0px;
+  padding: 0px; }
+
+.TipBookHeader {
+  width: 80vw;
+  position: fixed;
+  top: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: gray; }
+
+.TipBookHeaderContainer {
+  width: 80vw;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
   align-items: center; }
 
-.nextPrevious {
-  font-size: 8rem; }
+.TipBookHeaderFixed {
+  position: fixed;
+  z-index: 3;
+  width: 100vw; }
 
-br {
-  line-height: 300%; }
+.TipBook {
+  width: 80vw;
+  padding-top: calc($smallnav-size + 40px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 8px;
+  padding-left: 32px;
+  padding-right: 32px;
+  background-image: url("../../images/bookpage.jpg");
+  background-repate: no-repeat;
+  background-size: cover;
+  padding-bottom: 32px; }
+
+@media screen and (max-width: 767px) {
+  .TipBookContainer {
+    top: calc($largenav-size +30px); }
+  .TipBookHeader {
+    top: 280px; } }

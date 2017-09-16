@@ -8,7 +8,6 @@ import store from './store/store';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
 
-
 ReactDOM.render(
 	<BrowserRouter>
 	<Provider store={ store} >

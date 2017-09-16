@@ -2,14 +2,21 @@
 	font-size:2rem;
 display:flex;
 justify-content:center;
-     	width:80vw;
+     	width:100vw;
 
 }
 
-.Author{
+.AboutContainer{
+	padding-top:16px;
 	width:80vw;
+	display:flex;
+	justify-content:space-between;
+}
+.Author{
+	width:40vw;
+	padding-right:8px;
 }
 .Description{
-	width:80vw;
+	width:40vw;
 }
 

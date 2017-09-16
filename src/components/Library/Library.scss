@@ -17,8 +17,17 @@
 .Books{
        width:100vw;
 }
+.libraryFilter{
+	margin-right:8px;
+}
+.Search{
+	display:flex;
+	justify-content:space-around;
+	align-items:center;
+}
 .library_next_previous{
 	display:flex;
+	align-items:center;
 	justify-content:space-between;
  padding:20px;
 }
