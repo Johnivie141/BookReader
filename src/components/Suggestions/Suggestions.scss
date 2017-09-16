@@ -1,6 +1,17 @@
 @import '../../variables.scss';
 
-.Book{
+
+.Suggestions{
+        font-size:2rem;
+        text-align:left;
+        background-color:white;
+        padding-bottom:60px;
+
+}
+
+
+
+.TipBook{
 position:absolute;
         width:80vw;
  display:flex;

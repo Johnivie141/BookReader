@@ -39,15 +39,16 @@ class Read extends Component
 		     <h1 className="MainWord" >{(word)?word:''}</h1>
 		    <div className="OriginalWord">{(originalWord)?`Original: ${originalWord}`:''}</div>
 		     <div className="EditLookup">
-		       <div onClick={e=>{this.createEditWord(wordNumber,word,originalWord)}}>
-		        <button>Edit</button>
+		       <div  onClick={e=>{this.createEditWord(wordNumber,word,originalWord)}}>
+		        <button className="btn btn-primary" >Edit</button>
 		       </div>
-		       <div onClick={e=>{this.props.DictionaryLookup(word)}}>
-		        <button>Lookup</button>
+		       <div  onClick={e=>{this.props.DictionaryLookup(word)}}>
+		        <button className="btn btn-primary" >Lookup</button>
 		       </div>
 		      </div>
 		      </div>
 	     );
+
 			
 
 		this.props.setModal(initialModal);
@@ -70,6 +71,7 @@ class Read extends Component
 			<h1>Edit</h1>
 			<EditWord wordNumber={wordNumber}  oldword={oldword} submitEdit={this.submitEdit} word={word} /> 
 			</div>);
+
 		this.props.setModal(modalObject);
 	}
 
@@ -97,8 +99,9 @@ prevPage(){
   componentWillMount(){
 	  
 
-     if (this.props && this.props.getCurrent && (!this.props.currentBook || !this.props.currentText) ){
-	     this.props.getCurrent();
+     if (this.props && this.props.user && this.props.getCurrent && (!this.props.currentBook || !this.props.currentText) ){
+	    
+	    this.props.getCurrent();
      }
   }
 
@@ -243,12 +246,18 @@ let pageTurn = (this.props && this.props.turnPage)?" " + this.props.turnPage:"";
 
 
 const modalStyle = {
-  content : {
+
+	overlay:{
+		zIndex:10
+	},
+	content : {
+		position: 'relative',
+                color:'black',
+		width:(this.props && this.props.modalWidth)?this.props.modalWidth:'10vw',
     top                   : '50%',
     left                  : '50%',
     right                 : 'auto',
     bottom                : 'auto',
-    marginRight           : '-50%',
     transform             : 'translate(-50%, -50%)'
   }
 };
@@ -259,9 +268,14 @@ if (this.props && this.props.settings)
 		settingsStyle=Object.assign({},settingsStyle,{fontFamily:this.props.settings.fontFamily});
 	}
 }
-
         return (
                 <div className="Read">
+		  <Modal  isOpen={this.props.openModal} style={modalStyle}
+                    contentLabel="DictionaryLookup">
+                    {(this.props && this.props.modalObject)?this.props.modalObject:''}
+                    <button className="btn btn-primary" onClick={()=>this.closeModal()}>close</button>
+
+                  </Modal>
 
 
 
@@ -286,17 +300,13 @@ if (this.props && this.props.settings)
 
 
 		<div className="BookContainer">
-		  <Modal isOpen={this.props.openModal} style={modalStyle}
-                    contentLabel="DictionaryLookup">
-                    {(this.props && this.props.modalObject)?this.props.modalObject:''}
-                    <button onClick={()=>this.closeModal()}>close</button>
-
-                  </Modal>
 
 
-                <div className={"Book" + pageTurn}>
+                <div className={"Book" + pageTurn }>
                 <Hammer className="hammerSwipe" onSwipe={(e)=>this.handleSwipe(e)}>
 		<div  className="BookText" style={settingsStyle}>
+	
+		
 		{textProp}
                   </div>
 
@@ -312,7 +322,17 @@ if (this.props && this.props.settings)
 		</Hammer>
 		</div>
 		</div>
-                 
+                
+
+
+
+
+
+
+
+
+
+
                 </div>
         );
 

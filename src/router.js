@@ -6,7 +6,7 @@ import Read from './components/Read/Read';
 import Library from './components/Library/Library';
 import About from './components/About/About';
 import Settings from './components/Settings/Settings';
-
+import testModal from './components/testModal/testModal';
 export default (
 	<Switch>
 	<Route  path="/home" component={Main} />
@@ -15,6 +15,7 @@ export default (
 	<Route path="/library" component={Library} />
 	<Route path="/about" component={About} />
 	<Route path="/settings" component={Settings} />
+        <Route path="/testmodal" component={testModal} />
 	</Switch>
 );
 

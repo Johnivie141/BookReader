@@ -250,8 +250,9 @@ let bookid = +req.params.bookid;
 				let book = result[0];
 
 				let title =book.title;
-                                title=title.replace(/[^A-Za-z]/g," ");
+				title=title.replace(/[^A-Za-z]/g," ");
                                 title=title.replace(/  +/g," ");
+			console.log("title " + title);	
 				let descUrl="http://en.wikipedia.org/w/api.php?format=xml&action=query&prop=extracts&exintro=&explaintext=1&titles=" + title;
 
 
@@ -381,7 +382,7 @@ let bookid = +req.params.bookid;
                                             req.app.get("db").inc_likes([userid,bookid,1]).then(dbresponse=>{ 
 			       req.app.get("db").get_book([bookid])
 						    .then(book=>{
-					    res.status(200).json({book:bookid,text:textresponse.text,title:book[0].title,author:book[0].author,spellings:textresponse.spellings});
+					    res.status(200).json({book:bookid,text:textresponse.text,title:cleanWikiText(book[0].title),author:book[0].author,spellings:textresponse.spellings});
 					    })})
 				   })
 			   })
@@ -406,7 +407,7 @@ let bookid = +req.params.bookid;
 					    req.app.get("db").get_book([bookid])
 					    .then(book=>{
 
-					    res.status(200).json({book:bookid,text:response.text,spellings:response.spellings,title:book[0].title,author:book[0].author});
+					    res.status(200).json({book:bookid,text:response.text,spellings:response.spellings,title:cleanWikiText(book[0].title),author:book[0].author});
 					    })
 				    })
                                  })

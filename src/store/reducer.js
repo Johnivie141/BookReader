@@ -256,12 +256,13 @@ let initialState={
 	AuthorBio:'',
 	BookDescription:'',
         modalObject:null,
+        modalWidth:'10vw',
 	spellings:[],
 	filter:{library:"all",searchterm:''},
 	localBooks:[],
 	turnPage:'',
-	settings:{fontFamily:"Times New Roman"}
-
+	settings:{fontFamily:"Times New Roman"},
+        modalWidth:'10vw'
 }
 
 
@@ -308,8 +309,6 @@ console.log("next shelf" + nextShelf);
                     return Object.assign({},state,{modalObject:null,openModal:false});
 	case CHANGE_SPELLING + FULFILLED:
 	
-			console.log("NEW SPELLING OBJECT");
-			console.log(action.payload);
 			return Object.assign({},state,{spellings:action.payload,modalObject:null,openModal:false});
 
 	case GET_AUTHOR_BIO + FULFILLED:
@@ -322,11 +321,11 @@ console.log("next shelf" + nextShelf);
 			return Object.assign({},state,{modalObject:null,openModal:false});
 
 	case SET_MODAL:
-			return Object.assign({},state,{openModal:true,modalObject:action.payload});
+			return Object.assign({},state,{modalWidth:'15vw',openModal:true,modalObject:action.payload});
 	case DICTIONARY_LOOKUP + FULFILLED:
 			let modalObject = (<div><h1>{action.payload.word}</h1><p>{Parser(action.payload.meaning)}</p></div>);
 
-			return Object.assign({},state,{modalObject:modalObject,openModal:true});
+			return Object.assign({},state,{modalObject:modalObject,openModal:true,modalWidth:'40vw'});
 	case SET_CURRENT_SQL + FULFILLED:
 			return Object.assign({},state,{currentBook:action.payload.book,currentText:action.payload.text,spellings:action.payload.spellings,AuthorBio:'',BookDescription:'',currentTitle:action.payload.title,turnPage:''});
 
