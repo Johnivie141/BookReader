@@ -211,7 +211,7 @@ export function incBookshelf(){
 
 
 export function getPrevPage(bookid){
-	//window.scrollTo(0,0);
+	window.scrollTo(0,0);
 	return {
 		type:GET_PREV_PAGE,
 		payload:apiGetPrevPage(bookid)
@@ -220,7 +220,7 @@ export function getPrevPage(bookid){
 
 export function getNextPage(bookid){
 
-	//window.scrollTo(0,0);
+	window.scrollTo(0,0);
 	return {
               type:GET_NEXT_PAGE,
 	      payload:apiGetNextPage(bookid)
