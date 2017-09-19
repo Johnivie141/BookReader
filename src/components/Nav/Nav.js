@@ -6,12 +6,8 @@ import {Link} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import {getUser, getSettings} from '../../store/reducer'; 
 
-var jQuery = require('jquery');
-var $ = jQuery;
-window.jQuery = require('jquery');
 
 
-var bootstrap = require('bootstrap/dist/js/bootstrap.min.js');
 
 export class Nav extends Component{
 
@@ -34,14 +30,14 @@ export class Nav extends Component{
 if (this.props && this.props.user)
           {
                   loggedIn=true;
-		  if (this.props.getSettings && (!this.props.settings  || !this.props.settings["user_name"])  ){
+		  if (this.props.getSettings && (!this.props.settings  || !this.props.settings["user_id"])  ){
 			  this.props.getSettings();
 
 		  }
                   logintext=(
                            <li className="dropdown">
                                 <a className="dropdown-toggle" data-toggle="dropdown" href="#">
-                             {this.props.user.data.user_name}
+                             {(this.props && this.props.user && this.props.user.user_name)?this.props.user.user_name:''}
 
                              <span className="caret"></span></a>
                             <ul className="dropdown-menu navbar-nav nav  navbar-inverse">

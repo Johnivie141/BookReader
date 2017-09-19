@@ -1,0 +1,137 @@
+@import '../../variables.scss';
+.Read{
+	font-size:2rem;
+        text-align:left;
+	background-color:white;
+	padding-bottom:60px;
+height:100vh;
+width:100vw;
+}
+.wordModal{
+border:1px solid red;
+}
+
+.hiddenClass{
+	display:none;
+}
+
+
+.BookHeaderFixed{
+   position:fixed;
+   z-index:3;
+   width:100vw;
+}
+
+.BookHeaderContainer{
+
+	width:80vw;
+	margin:auto;
+	display:flex;
+	justify-content:space-between;
+	align-items:center;
+}
+.BookContainer{
+	position:absolute;
+top:calc($smallnav-size +40px);
+     width:100vw;
+	display:flex;
+	justify-content:center;
+	margin:0px;
+	padding:0px;
+}
+.hammerSwipe{
+	width:80vw;
+	display:flex;
+	justify-content:center;
+}
+
+
+
+
+.BookHeader{
+	width:80vw;
+	position:fixed;
+        top:$smallnav-size;
+	display:flex;
+	justify-content:space-between;
+	align-items:center;
+
+background:gray;
+
+}
+
+
+.MainWord{
+	font-size:1.4rem;
+}
+.OriginalWord{
+	padding-top:8px;
+}
+.EditLookup{
+	display:flex;
+	padding-top:8px;
+	padding-bottom:8px;
+	justify-content:space-between;
+
+
+
+}
+
+.invisibleText{
+	visibility:hidden;
+}
+.nextPageSetup{
+  
+  transform-origin:left top; 
+  transition: 1s;
+}
+.prevPageSetup{
+  
+  transform-origin:right top;
+  transition: 1s;
+}
+.Book:nth-child(1){
+	box-shadow:5px 5px 15px #333;
+z-index:2
+}
+.Book:nth-child(2){
+	box-shadow:5px 5px 15px #333;
+  transition: 1s;   
+  z-index:1;
+}
+.pageTurnNext{
+	transform: rotateY(-120deg);
+}
+
+.pageTurnPrev{
+	transform: rotateY(120deg);
+}
+
+
+.Book{
+position:absolute;
+top:20px;
+	width:80vw;
+ display:flex;
+ justify-content:space-around;
+ align-items:center;
+ padding-left:32px;
+ padding-right:32px;
+padding-top:32px;
+padding-bottom:32px;
+ background-image: url('../../images/bookpage.jpg');
+  background-repeat:no-repeat;
+  background-size:cover;
+}
+
+
+@media screen and (max-width:767px){
+.BookContainer{
+   top:calc($largenav-size +40px);
+}
+
+.BookHeader{
+	top:$largenav-size;
+}
+
+}

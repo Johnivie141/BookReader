@@ -1,6 +1,5 @@
 import React, { Component} from 'react';
 import {connect} from 'react-redux';
-import {getUser,Login} from '../../store/reducer';
 import './Main.css'
 import './reset.css';
 
@@ -38,5 +37,5 @@ return state;
 
 
 
-export default connect(mapStateToProps,{Login:Login,getUser:getUser})(Main);
+export default connect(mapStateToProps)(Main);
 

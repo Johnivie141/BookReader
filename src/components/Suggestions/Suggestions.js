@@ -55,15 +55,12 @@ let brcount=0;
 
 
  handleSwipe(ev) {
-        console.log(ev.type);
 	if (ev.deltaX <-30)
 	 {
-		 console.log("swipe left");
 		 this.setlike(-1);
 	 }
 	 if (ev.deltaX >30)
 	 {
-		 console.log("swipe right");
 		 this.setlike(1);
 	 }
     }	
@@ -101,7 +98,6 @@ readBook(event){
 render(){
 if (this.props)
 	{
-		console.log(this.props);
 	}
 
 let textProp ='';
@@ -125,7 +121,7 @@ let textProp ='';
 		<div className="TipBookContainer">
 		<div className="TipBook">
 		<Hammer onSwipe={(e)=>this.handleSwipe(e)}>
-		<div  onDoubleClick={(e)=>this.readBook(e)} className="TipBookText">
+		<div  onClick={(e)=>this.readBook(e)} className="TipBookText">
 	 	     {textProp}
 		  </div>
 		</Hammer>

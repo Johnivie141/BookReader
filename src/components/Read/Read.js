@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import './Read.css';
 import Hammer from 'react-hammerjs';
-import {animatePageTurn,downloadBook,changeWord,setModal,closeModal,DictionaryLookup,getCurrent,getNextPage,getPrevPage} from '../../store/reducer';
+import {endReaderText,updateReaderPosition,startReading,stopReading,animatePageTurn,downloadBook,changeWord,setModal,closeModal,DictionaryLookup,getCurrent,getNextPage,getPrevPage} from '../../store/reducer';
 import Word from '../Word/Word';
 import reactStringReplace from 'react-string-replace';
 import Modal from 'react-modal';
@@ -15,15 +15,74 @@ import 'font-awesome/css/font-awesome.min.css';
 
 class Read extends Component
 {
+
 	constructor(props){
 		super(props);
+	       this.state={reloadcount:0};
+
+
 		this.popupHandler = this.popupHandler.bind(this);
 	        this.submitEdit = this.submitEdit.bind(this);
 		this.prevPage=this.prevPage.bind(this);
 		this.nextPage=this.nextPage.bind(this);
 		this.fixText = this.fixText.bind(this);
-	
+                this.updateReaderPosition = this.updateReaderPosition.bind(this);	
 	}
+
+
+getVoice(){
+
+
+var msg = new SpeechSynthesisUtterance();
+var voices =this.getVoices();
+
+if (voices && voices.length>0)
+{
+let subvoices=null;
+let voice=null;
+if (this.props && this.props.settings.voiceName){
+
+  subvoices=voices.filter(voice=>{return voice.name===this.props.settings.voiceName;});
+	voice = subvoices[0];
+}
+if (voice ===null){
+ subvoices=voices.filter(voice=>{return voice.name==="Sara";}); 
+     voice = subvoices[0]; 
+
+}
+if (voice ===null){
+  voice = voices[0];
+}
+
+msg.voice = voice; // Note: some voices don't support altering params
+msg.voiceURI = 'native';
+msg.volume = 1; // 0 to 1
+msg.rate = 1; // 0.1 to 10
+//msg.pitch = 2; //0 to 2
+msg.lang = 'en-US';
+msg.addEventListener('onpause',(e)=>{
+console.log('on pause');
+});
+msg.addEventListener('onmark',(e)=>{
+console.log('msg on mark');
+});
+msg.addEventListener('onerror',(e)=>{
+console.log("msg error");
+});
+
+console.log("SET addListener to msg");
+msg.addEventListener('end',(e)=>{
+
+this.props.endReaderText();
+});
+
+
+this.setState({msg:msg});
+}
+}
+
+
+
 
 
 	downloadMyBook(){
@@ -96,14 +155,31 @@ prevPage(){
   }
 
 
-  componentWillMount(){
-	  
+componentDidMount(){
 
+  if (this.props && this.props.user && this.props.getCurrent && (!this.props.currentBook || !this.props.currentText) ){
+              this.props.getCurrent();
+       }
+
+}
+
+componentWillMount(){
+	  
      if (this.props && this.props.user && this.props.getCurrent && (!this.props.currentBook || !this.props.currentText) ){
-	    
 	    this.props.getCurrent();
      }
   }
+
+
+componentWillReceiveProps(props){
+ 
+     if (this.props && this.props.user && this.props.getCurrent && (!this.props.currentBook || !this.props.currentText) ){
+	    this.props.getCurrent();
+     }
+ 
+ }
+
+
 
 
 
@@ -213,16 +289,113 @@ hasSpellingChange(position,oldword,spellings){
 	else return '';
 }
 
+startReading(){
+if (this.props && this.props.startReading){
+     this.props.startReading();
+     }
+}
+stopReading(){
+ if (this.props && this.props.stopReading)
+      this.props.stopReading();
+}
+
+
+getVoices(){
+
+let voices=  window.speechSynthesis.getVoices();
+if (!voices || voices.length <1)
+{
+  let reloadCount=this.state.reloadcount;
+  reloadCount++;
+  if(reloadCount <3){
+
+  this.setState({reloadcount:reloadCount});
+  }
+}
+
+return voices;
 
 
 
+}
+updateReaderPosition(){
+if (this.props && this.props.updateReaderPosition && this.props.readerPosition && this.props.readerPosition.start ===this.props.currentText.length){
+	     setTimeout(()=>{this.props.getNextPage(this.props.currentBook)},1000);
+} 
+ else{
+     
+
+  let startpos = this.props.readerPosition.end;
+  
+  let endposition = 0;
+  
+  if ((startpos +100) < this.props.currentText.length ){
+
+    let tmpchunk = this.props.currentText.substring(startpos+100,startpos +200);
+      for (let end=1;end<tmpchunk.length;end++){
+       if ([' ','\r','\n','\t'].indexOf(tmpchunk[end])!==-1){
+         endposition=startpos +100 + end ;
+	 
+	 break;
+	 }
+       }
+       
+
+     
+     }
+    else // End position out of range only read until the end
+    {
+      endposition= this.props.currentText.length;
+
+    }
+    if (endposition==0) endposition = startpos +100;
+
+  // START READING
+  if (! this.state.msg){
+  let  voices = this.getVoices();
+  if (voices && voices.length >0){
+
+    this.getVoice();
+    
+   }
+}
+else{
+  let readingText=this.props.currentText.substring(startpos,endposition).replace(/<wc[0-9]+>/g,"") +' '
+  this.state.msg.text=readingText;
+  speechSynthesis.speak(this.state.msg);
+this.props.updateReaderPosition({text:readingText,start:startpos,end:endposition});
+
+}
+  // END READING
+    }
+ 
+}
+
+
+componentWillMount(){
+let voices =this.getVoices();
+
+}
 
 render(){
 	let downloadLink="";
+	let readerLink= "";
+        let readingButton='';
 if (this.props && this.props.currentBook)
 	{
-	console.log(this.props);
 		downloadLink = (<a href={`http://www.booktips.pro:3000/books/${this.props.currentBook}.html`}><i className="fa fa-cloud-download" aria-hidden="true"></i></a>);
+
+               if (this.props && this.props.isReading){
+                  readingButton= (<button className="volumeButton" onClick={e=>{this.stopReading()}}><i className="fa fa-volume-off"></i></button>);
+		}
+	        else if (this.props){
+	       readingButton=(<button className="volumeButton" onClick={e=>{this.startReading()}}><i className="fa fa-volume-up"></i></button>);
+		}
+	        else readingButton='';
+
+
+
+
 
         }
 
@@ -231,7 +404,7 @@ if (this.props && this.props.currentBook)
          textProp = this.fixText(this.props.currentText);
 	}
 	else{
-		console.log("NO TEXT");
+
 	}
 
 
@@ -241,6 +414,7 @@ if (this.props && this.props.currentBook)
 
 
 let pageTurn = (this.props && this.props.turnPage)?" " + this.props.turnPage:"";
+console.log("pageturn " + this.props.turnPage);
 
 
 
@@ -253,6 +427,7 @@ const modalStyle = {
 	content : {
 		position: 'relative',
                 color:'black',
+		fontSize:'2rem',
 		width:(this.props && this.props.modalWidth)?this.props.modalWidth:'10vw',
     top                   : '50%',
     left                  : '50%',
@@ -262,6 +437,19 @@ const modalStyle = {
   }
 };
 let settingsStyle={};
+if (this.props && this.props.isReading)
+{
+        if (!this.props.readerPosition.text)
+	   this.updateReaderPosition();
+	else{
+
+	}
+
+
+}
+
+
+
 if (this.props && this.props.settings)
 {
 	if (this.props.settings.fontFamily){
@@ -286,12 +474,12 @@ if (this.props && this.props.settings)
 		<div><button onClick={e=>this.prevPage()} className="btn btn-primary">Previous</button></div>
                  <div>{(this.props && this.props.currentTitle)?this.props.currentTitle:''}</div>
 		<div>{downloadLink}</div>
+		<div>{readingButton}</div>
 		<div><button onClick={e=>this.nextPage()} className="btn btn-primary">Next</button></div>
 	</div>	
 		
 		</div>
 		</div>
-
 
 
 
@@ -353,7 +541,7 @@ function mapStateToProps(state,ownProps){
 
 
 
-export default connect(mapStateToProps, {animatePageTurn:animatePageTurn,downloadBook:downloadBook,changeWord:changeWord,setModal:setModal,closeModal:closeModal,DictionaryLookup:DictionaryLookup,getCurrent,getNextPage,getPrevPage})(Read);
+export default connect(mapStateToProps, {endReaderText:endReaderText,updateReaderPosition:updateReaderPosition,startReading:startReading,stopReading:stopReading,animatePageTurn:animatePageTurn,downloadBook:downloadBook,changeWord:changeWord,setModal:setModal,closeModal:closeModal,DictionaryLookup:DictionaryLookup,getCurrent,getNextPage,getPrevPage})(Read);
 
 
 

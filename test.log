@@ -1,0 +1,473 @@
+[33m[nodemon] 1.11.0[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching: *.*[39m
+[32m[nodemon] starting `node server/index.js`[39m
+Listening on port 3000
+origin undefined
+origin undefined
+auth/me
+user not found
+Profile {
+  provider: 'github',
+  displayName: '',
+  id: 'github|27021307',
+  name: { familyName: undefined, givenName: undefined },
+  picture: 'https://avatars1.githubusercontent.com/u/27021307?v=4',
+  nickname: 'Johnivie141',
+  identities: 
+   [ { provider: 'github',
+       user_id: 27021307,
+       connection: 'github',
+       isSocial: true } ],
+  _json: 
+   { picture: 'https://avatars1.githubusercontent.com/u/27021307?v=4',
+     nickname: 'Johnivie141',
+     gravatar_id: '',
+     url: 'https://api.github.com/users/Johnivie141',
+     html_url: 'https://github.com/Johnivie141',
+     followers_url: 'https://api.github.com/users/Johnivie141/followers',
+     following_url: 'https://api.github.com/users/Johnivie141/following{/other_user}',
+     gists_url: 'https://api.github.com/users/Johnivie141/gists{/gist_id}',
+     starred_url: 'https://api.github.com/users/Johnivie141/starred{/owner}{/repo}',
+     subscriptions_url: 'https://api.github.com/users/Johnivie141/subscriptions',
+     organizations_url: 'https://api.github.com/users/Johnivie141/orgs',
+     repos_url: 'https://api.github.com/users/Johnivie141/repos',
+     events_url: 'https://api.github.com/users/Johnivie141/events{/privacy}',
+     received_events_url: 'https://api.github.com/users/Johnivie141/received_events',
+     type: 'User',
+     site_admin: false,
+     blog: '',
+     public_repos: 54,
+     public_gists: 1,
+     followers: 0,
+     following: 0,
+     updated_at: '2017-09-17T22:12:51.154Z',
+     clientID: 'sD9O4xwm1yMA4i7BoIp6PhzAovNsfVWv',
+     name: '',
+     user_id: 'github|27021307',
+     identities: [ [Object] ],
+     created_at: '2017-08-24T18:09:42.855Z',
+     sub: 'github|27021307' },
+  _raw: '{"picture":"https://avatars1.githubusercontent.com/u/27021307?v=4","nickname":"Johnivie141","gravatar_id":"","url":"https://api.github.com/users/Johnivie141","html_url":"https://github.com/Johnivie141","followers_url":"https://api.github.com/users/Johnivie141/followers","following_url":"https://api.github.com/users/Johnivie141/following{/other_user}","gists_url":"https://api.github.com/users/Johnivie141/gists{/gist_id}","starred_url":"https://api.github.com/users/Johnivie141/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/Johnivie141/subscriptions","organizations_url":"https://api.github.com/users/Johnivie141/orgs","repos_url":"https://api.github.com/users/Johnivie141/repos","events_url":"https://api.github.com/users/Johnivie141/events{/privacy}","received_events_url":"https://api.github.com/users/Johnivie141/received_events","type":"User","site_admin":false,"blog":"","public_repos":54,"public_gists":1,"followers":0,"following":0,"updated_at":"2017-09-17T22:12:51.154Z","clientID":"sD9O4xwm1yMA4i7BoIp6PhzAovNsfVWv","name":"","user_id":"github|27021307","identities":[{"provider":"github","user_id":27021307,"connection":"github","isSocial":true}],"created_at":"2017-08-24T18:09:42.855Z","sub":"github|27021307"}' }
+DISPLAY_NAME: 
+PICTURE:https://avatars1.githubusercontent.com/u/27021307?v=4
+EMAIL:
+USERID:27021307
+type is number
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+origin undefined
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+origin undefined
+auth/me
+anonymous {
+  id: 5,
+  auth_id: '27021307',
+  user_name: '',
+  email: '',
+  currentbook: 45,
+  img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' }
+USER FOUND
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}
+USER SERIALIZATION
+[ anonymous {
+    id: 5,
+    auth_id: '27021307',
+    user_name: '',
+    email: '',
+    currentbook: 45,
+    img: 'https://avatars1.githubusercontent.com/u/27021307?v=4' } ]
+user id 5
+response came
+response
+[]
+{}

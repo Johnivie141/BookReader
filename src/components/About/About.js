@@ -59,7 +59,6 @@ class About extends Component{
 }
 
 function mapStateToProps(state,ownProps){
-console.log("state change");
         if(ownProps && ownProps.history && !(state && state.history))
                 return Object.assign({},state,{history:ownProps.history});
         return state;

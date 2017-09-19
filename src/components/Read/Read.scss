@@ -8,7 +8,6 @@ height:100vh;
 width:100vw;
 }
 .wordModal{
-border:1px solid red;
 }
 
 .hiddenClass{
@@ -32,7 +31,7 @@ border:1px solid red;
 }
 .BookContainer{
 	position:absolute;
-top:calc($smallnav-size +30px);
+top:calc($smallnav-size +40px);
      width:100vw;
 	display:flex;
 	justify-content:center;
@@ -40,9 +39,7 @@ top:calc($smallnav-size +30px);
 	padding:0px;
 }
 .hammerSwipe{
-	width:80vw;
-	display:flex;
-	justify-content:center;
+	width:100%;
 }
 
 
@@ -82,13 +79,9 @@ background:gray;
 }
 .nextPageSetup{
   
-  transform-origin:left top; 
-  transition: 1s;
 }
 .prevPageSetup{
   
-  transform-origin:right top;
-  transition: 1s;
 }
 .Book:nth-child(1){
 	box-shadow:5px 5px 15px #333;
@@ -99,22 +92,22 @@ z-index:2
   transition: 1s;   
   z-index:1;
 }
-.pageTurnNext{
-	transform: rotateY(-120deg);
-}
 
-.pageTurnPrev{
-	transform: rotateY(120deg);
-}
 
+.fa-volume-off,.fa-volume-up,.volumeButton{
+	background-color:gray;
+ border:none;
+}
 
 .Book{
 position:absolute;
-	width:80vw;
- display:flex;
- justify-content:space-around;
- align-items:center;
- padding-left:32px;
+top:20px;
+width:80vw;
+
+  left: 50%;
+  transform: translate(-50%,0);
+
+	padding-left:32px;
  padding-right:32px;
 padding-top:32px;
 padding-bottom:32px;
@@ -123,10 +116,25 @@ padding-bottom:32px;
   background-size:cover;
 }
 
+.pageTurnNext{
+  transform-origin:left top; 
+  transition: 1s;
+  transform: rotateY(-120deg) translate(100%,0);
+
+  
+}
+
+.pageTurnPrev{
+  transform-origin:right top;
+  transition: 1s;
+  transform: rotateY(120deg) translate(100%,0);
+}
+
+
 
 @media screen and (max-width:767px){
 .BookContainer{
-   top:calc($largenav-size +30px);
+   top:calc($largenav-size +40px);
 }
 
 .BookHeader{

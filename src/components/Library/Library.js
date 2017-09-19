@@ -10,7 +10,6 @@ class Library extends Component{
 componentWillMount(){
 	if (this.props && this.props.getBooks && (!this.props.books || this.props.books.length <1)){
 
-		console.log("loading books");
 		this.props.getBooks(this.props.bookShelf,this.props.filter);
 	}
 }
@@ -22,29 +21,25 @@ this.props.history.push('/read');
 }
 
 shelfPrevious(){
-	console.log("function shelfPrevious");
 	if (this.props && this.props.prevShelf && this.props.bookShelf && this.props.bookShelf >0)
 	{
-		console.log("ready to call reducer function");
 	 this.props.prevShelf(this.props.bookShelf -1,this.props.filter);
 
 	}
 }
 
 shelfNext(){
-	console.log("function shelfNext");
-console.log(this.props);
 	if (this.props && this.props.nextShelf)
         {
-		console.log("ready to call reducer function nextShelf");
          this.props.nextShelf(this.props.bookShelf +1,this.props.filter);
         
         }
 }
 bookFilterChange(event){
 	if (this.props && this.props.setFilter){
-		this.props.setFilter(event.target.value);
-	        this.props.getBooks(this.props.bookShelf,this.props.filter,{library:event.target.value});
+		let newLibraryFilter=event.target.value;
+		this.props.setFilter({library:newLibraryFilter});
+	        this.props.getBooks(this.props.bookShelf,this.props.filter,{library:newLibraryFilter});
 	}
 }
 useSearchFilter(searchValue)
@@ -69,7 +64,7 @@ render(){
                return (
 
 		       
-		       <div className="book" key={book.id} onDoubleClick={(e)=>this.readBook(book.id)} >
+		       <div className="book" key={book.id} onClick={(e)=>this.readBook(book.id)} >
 			 <img src={book["coverImage"]}  alt={book.title} height="182" width="128" />
 		       </div>
 	       );

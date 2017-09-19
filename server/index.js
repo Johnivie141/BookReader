@@ -28,7 +28,6 @@ const whitelist=['http://localhost:3000','http://18.220.207.69:3000'];
 
 var corsOptions={
 origin: function (origin,callback){
-	console.log("origin " + origin);
      if (true || origin==="http://www.booktips.pro:3030" ||  origin =="http://18.220.134.202:3030"){
 		callback(null,true);
 	}
@@ -72,18 +71,25 @@ passport.use(new Auth0Strategy({
 	callbackURL: process.env.AUTH_CALLBACK
 }, function(accessToken,refreshToken,extraParams,profile,done){
 	const db = app.get('db');
-	db.find_user([profile.identities[0].user_id])
+
+
+			let email='';
+			if (profile && profile.emails){
+				email = profile.emails[0].value;
+			}
+
+	db.find_user(["" + profile.identities[0].user_id])
 	.then(user=>{
 		if (user[0]){
 			return done(null,{id:user[0].id});
 		}
 		else {
-			let email= (profile && profile.emails)?profile.emails[0].value: '';
-			db.create_user([profile.displayName,email,profile.picture,profile.identities[0].user_id])
+
+			db.create_user([profile.displayName,email,profile.picture,"" + profile.identities[0].user_id])
 			 .then(user=>{return done(null,{id:user[0].id})});
 		}
 	})
-	.catch(err=>console.log(err));
+	.catch(err=>{console.log("DB QUERY ERROR");console.log(err)});
 }));
 
 
@@ -105,13 +111,16 @@ passport.deserializeUser(function(obj,done){
 });
 
 app.get('/auth/me',cors(corsOptions),(req,res,next)=>{
+	console.log("auth\/me");
 	if (!req.user){
-		
+	console.log("user not found");	
 		res.status(404).send('User not found');
 	}
 	else {
 
-		console.log(req.session.user);
+
+		console.log(req.user);
+		console.log("USER FOUND");
 		res.status(200).send(req.user);
 	}
 });

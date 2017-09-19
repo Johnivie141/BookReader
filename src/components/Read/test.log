@@ -1,0 +1,26 @@
+10a11
+> border:1px solid red;
+42c43,45
+< 	width:100%;
+---
+> 	width:80vw;
+> 	display:flex;
+> 	justify-content:center;
+107,110d109
+< .fa-volume-off,.fa-volume-up,.volumeButton{
+< 	background-color:gray;
+<  border:none;
+< }
+115,120c114,118
+< width:80vw;
+< 
+<   left: 50%;
+<   transform: translate(-50%,0);
+< 
+< 	padding-left:32px;
+---
+> 	width:80vw;
+>  display:flex;
+>  justify-content:space-around;
+>  align-items:center;
+>  padding-left:32px;

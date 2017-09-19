@@ -53,12 +53,9 @@ function getCurrentPage(req,userid,bookid){
                                              let spellingStart = wordMarker - wordcount; 
                                              if (spellingStart <0) spellingStart =0; 
                                              let spellingEnd = wordMarker + wordcount;
-			    console.log(`spelling Start ${spellingStart} spelling end ${spellingEnd}`);
                                      req.app.get("db").get_spellings([userid, bookid,spellingStart,spellingEnd]) 
                                         .then(spellings=>{ 
 			
-						console.log("GET CURRENT PAGE api debug spellings");
-						console.log(spellings);
 						resolve({text:strippeddata,spellings:spellings})}) 
 
 
@@ -158,22 +155,16 @@ module.exports ={
 
 	getSettings:(req,res)=>{
 		if (!req.user){
-			console.log("USER NOT FOUND");
 			return res.status(404).send('User not found');
 		}
 		else{
-			console.log("user id " + req.user.id);
 			req.app.get("db").get_settings([+req.user.id]).
                         then(response=>{
-				console.log("response came");
 			let settingsObject={};
-				console.log("response");
-				console.log(response);
 				response.map(result=>{
 				settingsObject[result.keyname]=result.value;
 				});
 
-				console.log(settingsObject);
 	
 				res.status(200).send(settingsObject);
 			})
@@ -183,7 +174,6 @@ module.exports ={
 	},
 	setSettings:(req,res)=>{
 		if (!req.user){
-			console.log("USER NOT FOUND");
 			return res.status(404).send('User not found');
 		}
 	        else{
@@ -191,7 +181,6 @@ module.exports ={
 			let PromiseArray=[];
 			let {settings}=req.body;
 			for (let prop in settings){
-			console.log(prop + " => " + settings[prop]);
 				PromiseArray.push(req.app.get("db").set_settings([+req.user.id,prop,settings[prop]]));
 			}
 			      return Promise.all(PromiseArray).then(
@@ -208,38 +197,28 @@ module.exports ={
 		
 		
 		downloadBook:(req,res)=>{
-		console.log("begin server function download Book");
 		let userid=+req.user.id;
 		let bookid = +req.params.bookid;
-		console.log("bookid " + bookid);
-		console.log(typeof bookid);
 		req.app.get("db").get_book([bookid])
 		.then(book=>{
-			console.log("book Object is ");
-			console.log(book);
 		    download(req,res,book.size);
 		})
 		.catch(err=>console.log(err));
 	},
 	changeSpelling:(req,res)=>{
-console.log("IN SPELLINGS");	
 		let bookid= +req.params.bookid;
 		let userid = +req.user.id;
 		oldWord = req.query.oldword;
 		newWord = req.query.newword;
 		position = +req.query.position;
-		console.log("SQL CHANGE FROM " +oldWord + " TO " + newWord);
 		req.app.get("db").set_spelling([userid,bookid,oldWord,newWord,position])
 		.then(
 		result=>{
-			console.log("return");
 			res.status(200).send("ok")
 		})
 		.catch(err=>{
-			console.log("error in spellings");
 			console.log(err);
 		})
-		console.log("debug1");
 	},
 
 
@@ -252,14 +231,12 @@ let bookid = +req.params.bookid;
 				let title =book.title;
 				title=title.replace(/[^A-Za-z]/g," ");
                                 title=title.replace(/  +/g," ");
-			console.log("title " + title);	
 				let descUrl="http://en.wikipedia.org/w/api.php?format=xml&action=query&prop=extracts&exintro=&explaintext=1&titles=" + title;
 
 
 				api.get(descUrl)
 				.then(description=>{
 
-					console.log(description);
 					let extracts = description.data.match(/<extract[^>]*>((?:(?!<\/extract>)[\s\S])*)<\/extract>/);
 
 					if (extracts){
@@ -438,23 +415,26 @@ let bookid = +req.params.bookid;
 	getMyBooks:(req,res)=>{
 		if (!req.user) return res.status(404).send('User not found');
 		else {
+			console.log("getMyBooks");
+			console.log(` user id ${req.user.id}`);
 			let shelf=0;
 			if (req.query && req.query.shelf){
 				shelf=+req.query.shelf;
 			}
 			let searchTerm = (req.query.searchTerm)?req.query.searchTerm:'';
 			searchTerm = '%' + searchTerm.toLowerCase()  + '%';
+                      console.log(`searchTerm ${searchTerm}`);
 
 			req.app.get("db").get_mybooks([searchTerm,+req.user.id,20,shelf*20])
 			.then(result=>{res.status(200).send(result)})
-		        .catch(err=>res.status(500).end());
+		        .catch(err=>{console.log(err);res.status(500).end()});
 		}
 	},
 
 	get_book_byid:(req,res)=>{
 		if (!req.user) return res.status(404).send('User not found');
 		else {
-                      
+                     
 			req.app.get("db").get_book([+req.params.bookid])
 			.then(result=>{res.status(200).send(result)})
 			.catch(err=>{console.log(err);res.status(500).end()})
@@ -478,7 +458,7 @@ let bookid = +req.params.bookid;
                         .then(result=>{ 
                         let chunkSize=500;
 				let bookid=result[0].id;
-                        let currentpos=Math.floor(Math.random()*(result[0].size - chunkSize));
+                        let currentpos=Math.floor((Math.random()*result[0].size) - chunkSize);
 
 
 
@@ -504,7 +484,6 @@ let bookid = +req.params.bookid;
 
 
 	get_suggestions:(req,res)=>{
-		console.log("GET SUGGESTIONS");
 		if (!req.user) return res.status(404).send('User not found');
 		else {
                       let offset=0;
@@ -512,8 +491,6 @@ let bookid = +req.params.bookid;
 				offset=+req.query.offset;
 			}
 
-			console.log("OFFSET " + offset);
-			console.log("USER " + req.user.id);
 
 			req.app.get("db").get_suggestions([+req.user.id,offset])
 			.then(result=>{
