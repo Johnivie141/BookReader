@@ -24,7 +24,7 @@ export class Nav extends Component{
 
 	render(){
 		
-        let  logintext=(<li> <a href="http://www.booktips.pro:3000/auth">Login</a></li>);
+        let  logintext=(<li> <a href="https://www.booktips.pro:8443/auth">Login</a></li>);
           let loggedIn = false;
 
 if (this.props && this.props.user)

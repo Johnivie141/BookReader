@@ -7,6 +7,7 @@ import Library from './components/Library/Library';
 import About from './components/About/About';
 import Settings from './components/Settings/Settings';
 import testModal from './components/testModal/testModal';
+import MakeBook from './components/MakeBook/MakeBook';
 export default (
 	<Switch>
 	<Route  path="/home" component={Main} />
@@ -16,6 +17,7 @@ export default (
 	<Route path="/about" component={About} />
 	<Route path="/settings" component={Settings} />
         <Route path="/testmodal" component={testModal} />
+        <Route path="/mybook" component={MakeBook} />
 	</Switch>
 );
 

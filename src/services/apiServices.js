@@ -1,6 +1,6 @@
 import axios from 'axios';
 //import LZString from 'lz-string';
-const localApiUrl='http://www.booktips.pro:3000';
+const localApiUrl='https://www.booktips.pro:8443';
 
 const api = axios.create({
 	withCredentials:true

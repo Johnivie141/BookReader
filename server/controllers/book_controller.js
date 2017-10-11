@@ -1,5 +1,14 @@
 let fs = require('fs');
 const axios = require('axios');;
+const AWS = require(`aws-sdk`),
+    env = require('dotenv').config({ path: '/home/ec2-user/security/booktips/booktips.s3' });
+AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESSKEY,
+    secretAccessKey: process.env.AWS_SECRETKEY,
+    region: process.env.AWS_REGION
+});
+const S3 = new AWS.S3({ params: {Bucket: process.env.AWS_BUCKETNAME}});
+const bucketName = process.env.AWS_BUCKETNAME;
 
 const merriam = require('/home/ec2-user/security/booktips/merriam_config.js');
 
@@ -393,6 +402,35 @@ let bookid = +req.params.bookid;
 
         },
 
+	uploadImage :(req,res)=>{
+
+	 console.log(req.body);
+
+      let pic = rec.body.pic;
+      let imageBody2=pic.imageBody.replace(/^data:image\/[^;]*;base64,/, "");
+      let buf = new Buffer(imageBody2, 'base64');
+
+
+    let params = {
+        Bucket: bucketName,
+        Body: buf,
+        Key: pic.imageName,
+        ContentEncoding: 'base64',
+        ContentType: pic.imageExtension,
+        ACL: `public-read`
+    };
+   
+      S3.upload(params, (err, data) => {
+        if (err){
+            console.log(err);
+            res.status(500).end();
+        }
+        console.log(data);
+	   res.status(200).send(data);
+    })
+
+
+	},
 	getBooks:(req,res)=>{
 		if (!req.user) return res.status(404).send('User not found');
 		else {

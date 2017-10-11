@@ -416,6 +416,15 @@ if (this.props && this.props.currentBook)
 let pageTurn = (this.props && this.props.turnPage)?" " + this.props.turnPage:"";
 console.log("pageturn " + this.props.turnPage);
 
+		let topModalHeight="50%";
+		const mq = window.matchMedia( "(max-width: 768px)" );
+		if (mq.matches){
+			console.log("SETTING to 75%");
+                        topModalHeight="75%";
+		}
+		else{
+			console.log("SETTING TO 50%");
+		}
 
 
 
@@ -428,8 +437,9 @@ const modalStyle = {
 		position: 'relative',
                 color:'black',
 		fontSize:'2rem',
+		height:"200px",
 		width:(this.props && this.props.modalWidth)?this.props.modalWidth:'10vw',
-    top                   : '50%',
+    top                   : topModalHeight,
     left                  : '50%',
     right                 : 'auto',
     bottom                : 'auto',

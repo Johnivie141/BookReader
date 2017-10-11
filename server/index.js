@@ -9,11 +9,20 @@ const env=require('dotenv').config({
       , session = require('express-session')
       , postgres_config = require('/home/ec2-user/security/booktips/postgres_config')
       , server_config = require('/home/ec2-user/security/booktips/server_config')
-      , port=3000
+      , port=8443
       , app=express()
 
-	, bookCTRL = require('./controllers/book_controller');
 
+       ,fs = require('fs')
+	, sslOptions={
+	       key:fs.readFileSync('/home/ec2-user/security/booktips/booktips_key.pem'),
+	       cert: fs.readFileSync('/home/ec2-user/security/booktips/booktips_cert.pem'),
+	       passphrase: 'booktipslovesbooks'
+
+       }
+	,http = require('http')
+       ,https = require('https')
+	, bookCTRL = require('./controllers/book_controller');
 massive({
 	host:postgres_config.host,
 	port:postgres_config.port,
@@ -94,7 +103,7 @@ passport.use(new Auth0Strategy({
 
 
 app.get('/auth/callback',passport.authenticate('auth0',{
-	successRedirect:'http://www.booktips.pro:3000/home',
+	successRedirect:'https://www.booktips.pro:8443/home',
 	failureRedirect:'http://www.bing.com'
 })
 );
@@ -127,7 +136,7 @@ app.get('/auth/me',cors(corsOptions),(req,res,next)=>{
 
 app.get('/auth/logout',(req,res)=>{
 	req.logOut();
-	 res.redirect(302,'http://localhost:3000/#/');
+	 res.redirect(302,'https://localhost:8443/#/');
 });
 
 app.get('/auth',(req,res,next)=>{
@@ -159,7 +168,7 @@ app.get('/api/book/:bookid',bookCTRL.get_book_byid);
 
 app.get('/api/settings',bookCTRL.getSettings);
 app.post('/api/settings',bookCTRL.setSettings);
-
+app.get('/api/upload',bookCTRL.uploadImage);
 
 
 
@@ -172,4 +181,5 @@ app.get('*',cors(corsOptions),(req,res)=>{
 });
 
 
-app.listen(port,()=>{console.log(`Listening on port ${port}`);});
+https.createServer(sslOptions,app).listen(port);
+//app.listen(port,()=>{console.log(`Listening on port ${port}`);});

@@ -284,6 +284,7 @@ export function getSuggestions(){
 
 
 
+
 let initialState={
 	readerPosition:{start:0,end:0,text:''},
 	isReading:false,
@@ -297,7 +298,7 @@ let initialState={
 	AuthorBio:'',
 	BookDescription:'',
         modalObject:null,
-        modalWidth:'400px',
+        modalWidth:'25vw',
 	spellings:[],
 	filter:{library:"all",searchterm:''},
 	localBooks:[],
@@ -378,11 +379,11 @@ export default function reducer(state=initialState,action){
 			return Object.assign({},state,{modalObject:null,openModal:false});
 
 	case SET_MODAL:
-			return Object.assign({},state,{modalWidth:'400px',openModal:true,modalObject:action.payload});
+			return Object.assign({},state,{modalWidth:"25vw",openModal:true,modalObject:action.payload});
 	case DICTIONARY_LOOKUP + FULFILLED:
 			let modalObject = (<div><h1>{action.payload.word}</h1><p>{Parser(action.payload.meaning)}</p></div>);
 
-			return Object.assign({},state,{modalObject:modalObject,openModal:true,modalWidth:'800px'});
+			return Object.assign({},state,{modalObject:modalObject,openModal:true,modalWidth:"50vw"});
 	case SET_CURRENT_SQL + FULFILLED:
 			return Object.assign({},state,{currentBook:action.payload.book,currentText:action.payload.text,spellings:action.payload.spellings,AuthorBio:'',BookDescription:'',currentTitle:action.payload.title,turnPage:'',readerPosition:{start:0,end:0,text:''}});
 
