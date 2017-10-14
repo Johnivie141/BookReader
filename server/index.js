@@ -32,7 +32,7 @@ massive({
         .then(db=>{app.set('db',db);
 	});
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
 const whitelist=['http://localhost:3000','http://18.220.207.69:3000'];
 
 var corsOptions={
@@ -168,7 +168,7 @@ app.get('/api/book/:bookid',bookCTRL.get_book_byid);
 
 app.get('/api/settings',bookCTRL.getSettings);
 app.post('/api/settings',bookCTRL.setSettings);
-app.get('/api/upload',bookCTRL.uploadImage);
+app.post('/api/upload',bookCTRL.uploadImage);
 
 
 

@@ -3,10 +3,12 @@ const axios = require('axios');;
 const AWS = require(`aws-sdk`),
     env = require('dotenv').config({ path: '/home/ec2-user/security/booktips/booktips.s3' });
 AWS.config.update({
-    accessKeyId: process.env.AWS_ACCESSKEY,
-    secretAccessKey: process.env.AWS_SECRETKEY,
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_KEY,
     region: process.env.AWS_REGION
-});
+})
+
+
 const S3 = new AWS.S3({ params: {Bucket: process.env.AWS_BUCKETNAME}});
 const bucketName = process.env.AWS_BUCKETNAME;
 
@@ -404,9 +406,8 @@ let bookid = +req.params.bookid;
 
 	uploadImage :(req,res)=>{
 
-	 console.log(req.body);
 
-      let pic = rec.body.pic;
+      let pic = req.body.pic;
       let imageBody2=pic.imageBody.replace(/^data:image\/[^;]*;base64,/, "");
       let buf = new Buffer(imageBody2, 'base64');
 
@@ -419,9 +420,11 @@ let bookid = +req.params.bookid;
         ContentType: pic.imageExtension,
         ACL: `public-read`
     };
-   
+  
+
       S3.upload(params, (err, data) => {
         if (err){
+		console.log("error uploading this image to s3");
             console.log(err);
             res.status(500).end();
         }

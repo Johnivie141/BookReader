@@ -362,11 +362,13 @@ handleFile(fileArray,callback) {
     let that=this;
     const reader = new FileReader();
     const file = fileArray[0];
-
+ console.log("uploading file");
+	console.log(file);
    this.setState({
       processing: true
     });
-    
+
+	console.log("File Upload triggered");
     reader.onload = (upload) => {
 
 
@@ -378,7 +380,7 @@ let fileType=upload.currentTarget.result.replace(/data:([^;]*);.*$/,"$1");
             imageExtension: fileType
    }
 
-
+console.log(pic);
  axios.post( '/api/upload',{pic:pic})
     .then(function(data){
        console.log("DATA RETURNED FROM UPLOAD");
