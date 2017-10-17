@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 
 import ReactQuill from 'react-quill';
 import theme from 'react-quill/dist/quill.snow.css';
+import './MakeBook.css';
 
 //import '../../styles/CreateBlog.css';
 

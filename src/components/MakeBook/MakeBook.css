@@ -1,0 +1,6 @@
+div#toolbar {
+  position: fixed; }
+
+div.quill-contents {
+  position: relative;
+  top: 50px; }
