@@ -42,6 +42,7 @@ if (this.props && this.props.user)
                              <span className="caret"></span></a>
                             <ul className="dropdown-menu navbar-nav nav  navbar-inverse">
                              <li><Link to="/settings">Settings</Link></li>
+                             <li><a href="ihttps://john141.auth0.com/v2/logout?returnTo=https%3A%2F%2Fwww.booktips.pro:8443%2F/home">Logout</a></li>
                            </ul>
 
                             </li>
